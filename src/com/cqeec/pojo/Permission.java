@@ -12,14 +12,14 @@ public class Permission {
 
   private String url;
 
-  Permission(String name, Long id, String desc_, String url) {
+  public Permission(String name, Long id, String desc_, String url) {
     this.name=name;
     this.id=id;
     this.desc_=desc_;
     this.url=url;
   }
 
-  Permission() {
+  public Permission() {
   }
 
   public String getName() {

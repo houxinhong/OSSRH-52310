@@ -1,37 +1,37 @@
 package com.cqeec.pojo;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.cqeec.util.DBUtil;
+import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.SqlUtil;
 
 public class RoleMapper {
-     
 	//常用的增删改查
 	public void insert(Role role) {
 	        String sql=SqlUtil.getInsertSql(role.getClass()); 
-		    DBUtil.modify(role,sql);
+	        SqlUtil.save(sql,role);
 	}
 	
 	public void delete(long id) {
-		try {
 			String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+			SqlUtil.delete(sql,id);
 	}
 	
 	public void update(Role role) {
+		String sql=SqlUtil.getUpdateSql(role.getClass());
+		SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
 		
 	}
 	
 	public Role select(long id) {
-		
-		return null;
+		String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
+		return SqlUtil.select(sql,Role.class,id)!=null?(Role)SqlUtil.select(sql,Role.class,id).get(0):null;
 	}
 	//批量增删改查
     public void batchInsert(List<Role> roles) {

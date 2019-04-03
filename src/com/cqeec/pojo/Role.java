@@ -10,13 +10,13 @@ public class Role {
 
   private String desc_;
 
-  Role(String name, Long id, String desc_) {
+  public Role(String name, Long id, String desc_) {
     this.name=name;
     this.id=id;
     this.desc_=desc_;
   }
 
-  Role() {
+  public Role() {
   }
 
   public String getName() {
@@ -42,4 +42,10 @@ public class Role {
   public void setDesc_(String desc_) {
     this.desc_=desc_;
   }
+
+@Override
+public String toString() {
+	return "Role [name=" + name + ", id=" + id + ", desc_=" + desc_ + "]";
+}
+  
 }

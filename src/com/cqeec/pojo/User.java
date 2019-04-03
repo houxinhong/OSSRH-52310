@@ -12,14 +12,14 @@ public class User {
 
   private Long id;
 
-  User(String password, String salt, String name, Long id) {
+  public User(String password, String salt, String name, Long id) {
     this.password=password;
     this.salt=salt;
     this.name=name;
     this.id=id;
   }
 
-  User() {
+  public User() {
   }
 
   public String getPassword() {

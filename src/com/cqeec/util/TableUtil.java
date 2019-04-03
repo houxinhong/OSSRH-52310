@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 
 public class TableUtil {
 	
-	public static List<TableInfo> getTables() throws SQLException{
+	public static List<TableInfo> getTables() {
 		List<TableInfo> list=new ArrayList<>();
 		try {
 			//初始化获得表的信息
@@ -75,7 +76,6 @@ public class TableUtil {
 		return temp;
 	}
 	
-	
 	/**
 	 * 将类名转换为表名
 	 * @param matename
@@ -95,4 +95,19 @@ public class TableUtil {
 		return matename;
 	}
 	
+	public static Map<Class ,TableInfo > getTableInfoMap() {
+     try {
+		Map<Class, TableInfo> map=new HashMap<>();
+		List<TableInfo> list=GlobalParams.tableInfos;
+		for(TableInfo tableInfo:list) {
+			String className=ClassUtil.getQuilifiedName(tableInfo.getTname());
+				map.put(Class.forName(className),tableInfo);
+		}
+		return map;
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				return null;
+			}
+		
+	}
 }

@@ -89,5 +89,9 @@ public class ClassUtil {
 		} 
 
 	}
-	
+	public static String getQuilifiedName(String tname) {
+		String simple=getClassSimpleName(tname);
+		String  quilified=FileParseUtil.parsePropertyFile("config.properties").getProperty("targetPackage")+"."+simple;
+		return quilified;
+	}
 }

@@ -23,7 +23,7 @@ public class GenerateCodeUtil {
 	/**
 	 * 生成java文件
 	 */
-	public static void generateJavaFile(){
+	public static void generateJavaFile(String configPath){
 		//获取所有表信息
 		try {
 			List<TableInfo> list=TableUtil.getTables();
@@ -60,6 +60,7 @@ public class GenerateCodeUtil {
 					methods.add(get);
 					methods.add(set);
 				}
+				methodBuilder.addModifiers(Modifier.PUBLIC);
 				MethodSpec constructor=methodBuilder.build();
 				
 				//将属性与方法添加进类中
@@ -67,12 +68,12 @@ public class GenerateCodeUtil {
 				TypeSpec type=TypeSpec.classBuilder(simpleClassName)
 				.addMethods(methods)
 				.addMethod(constructor)
-				.addMethod(MethodSpec.constructorBuilder().build())
+				.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build())
 				.addFields(fields)
 				.addModifiers(Modifier.PUBLIC).build();
 				//生成对应的java文件
-				String targetPackage=FileParseUtil.parsePropertyFile("config.properties").getProperty("targetPackage");
-				String targetProject=FileParseUtil.parsePropertyFile("config.properties").getProperty("targetProject");
+				String targetPackage=FileParseUtil.parsePropertyFile(configPath).getProperty("targetPackage");
+				String targetProject=FileParseUtil.parsePropertyFile(configPath).getProperty("targetProject");
 				JavaFile javaFile=JavaFile.builder(targetPackage, type).build();
 				//将java类输出到指定目录 
 				try {
@@ -82,7 +83,7 @@ public class GenerateCodeUtil {
 				}
 			 }
 		  }
-		  catch (SQLException e) {
+		  catch (Exception e) {
 		      e.printStackTrace();
 	      }
 	}

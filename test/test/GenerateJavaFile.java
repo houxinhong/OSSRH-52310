@@ -11,7 +11,7 @@ public class GenerateJavaFile {
 	
 	@Test
 	public void test01(){
-		  GenerateCodeUtil.generateJavaFile();
+		  GenerateCodeUtil.generateJavaFile("config.properties");
 
 		  
 	}

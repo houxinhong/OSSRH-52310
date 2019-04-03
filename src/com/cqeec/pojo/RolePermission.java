@@ -9,13 +9,13 @@ public class RolePermission {
 
   private Long rid;
 
-  RolePermission(Long pid, Long id, Long rid) {
+  public RolePermission(Long pid, Long id, Long rid) {
     this.pid=pid;
     this.id=id;
     this.rid=rid;
   }
 
-  RolePermission() {
+  public RolePermission() {
   }
 
   public Long getPid() {

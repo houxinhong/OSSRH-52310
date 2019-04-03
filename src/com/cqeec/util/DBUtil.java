@@ -116,24 +116,6 @@ public class DBUtil {
 		return conf;
 	}
 
-	public static void modify(Object obj,String sql) {
-		
-		try {
-		Connection con=DBUtil.getConn();
-		PreparedStatement ps=con.prepareStatement(sql);
-		    Field[] fields=obj.getClass().getDeclaredFields();
-		    int i=1;
-		    while(i==fields.length-1) {
-		    	//ps.setObject(i, x);
-		    	//i++
-		    }
-		    
-		    
-			ps.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 

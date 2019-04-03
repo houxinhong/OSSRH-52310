@@ -9,13 +9,13 @@ public class UserRole {
 
   private Long rid;
 
-  UserRole(Long uid, Long id, Long rid) {
+  public UserRole(Long uid, Long id, Long rid) {
     this.uid=uid;
     this.id=id;
     this.rid=rid;
   }
 
-  UserRole() {
+  public UserRole() {
   }
 
   public Long getUid() {
