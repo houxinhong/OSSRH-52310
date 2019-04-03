@@ -1,0 +1,56 @@
+package com.cqeec.pojo;
+
+import java.lang.Long;
+import java.lang.String;
+
+public class User {
+  private String password;
+
+  private String salt;
+
+  private String name;
+
+  private Long id;
+
+  User(String password, String salt, String name, Long id) {
+    this.password=password;
+    this.salt=salt;
+    this.name=name;
+    this.id=id;
+  }
+
+  User() {
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password=password;
+  }
+
+  public String getSalt() {
+    return salt;
+  }
+
+  public void setSalt(String salt) {
+    this.salt=salt;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name=name;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id=id;
+  }
+}
