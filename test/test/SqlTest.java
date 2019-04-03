@@ -65,9 +65,8 @@ public class SqlTest {
 	@Test
 	public void test05() {
 		RoleMapper mapper=new RoleMapper();
-		Condition condition=mapper.createCondtion();
-		condition.andDesc_Like("%员%").andIdGreatThan(2);
-		List<Role> roles=mapper.selectByCondition(condition);
+		Condition condition1=mapper.createCondtion();
+		List<Role> roles=mapper.selectByCondition(condition1);
 		for(Role role:roles) {
 			System.out.println(role);
 		}

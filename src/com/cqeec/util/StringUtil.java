@@ -31,6 +31,12 @@ public class StringUtil {
 	}
 	
 	
+	public static String spot2Slash(String str) {
+		return str.replace('.', '\\');
+	}
+	
+	
+	
 	
 	
 	

@@ -1,16 +1,11 @@
 package com.cqeec.pojo;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.SqlUtil;
+import com.cqeec.util.StringUtil;
 
 public class RoleMapper {
 	//常用的增删改查
@@ -116,7 +111,23 @@ public class RoleMapper {
 			
 		}
 
-        
+        /**
+         * 简化一些重复的操作
+         */
+		private  Condition simplify(String str,Object...params) {
+			this.paramCount++;
+			if(params!=null) {
+				for(Object param:params) {
+					this.params.add(param);
+				}
+			}
+			if(paramCount==1) {
+           	 this.sql.append(str);	
+            }else {
+           	 this.sql.append(" and "+str);	
+            }
+			 return this;
+		}
 		
 		/**
 		 * 获取没有带where关键字的sql语句
@@ -143,60 +154,7 @@ public class RoleMapper {
 		public Object[] generateParams() {
 			return params.toArray();
 		}
-		/*
-		public Condition or() {
-			this.sql.append(" or ");
-			return this;
-		}
 		
-		public Condition and() {
-			this.sql.append(" and ");
-			return this;
-		}
-		
-		
-		public Condition greaterThan(long val) {
-			this.paramCount++;
-			this.sql.append(" > ? ");
-			this.params.add(val);
-			return this;
-		}
-		
-		public Condition lessThan(long val) {
-			this.paramCount++;
-			this.sql.append(" < ? ");
-			this.params.add(val);
-			return this;
-		}
-		
-		public Condition equal(Object val) {
-			this.paramCount++;
-			this.sql.append(" = ? ");
-			this.params.add(val);
-			return this;
-		}
-		
-		public Condition like(Object val) {
-			this.paramCount++;
-			this.sql.append(" like ? ");
-			this.params.add(val);
-			return this;
-		}
-		
-		public Condition id() {
-			this.sql.append(" id ");
-			return this;
-		}
-		public Condition name() {
-			this.sql.append(" name ");
-			return this;
-		}
-		public Condition desc_() {
-			this.sql.append(" desc_ ");
-			return this;
-		}
-		
-		*/
 		/**
 		 * 包含，相当于括号
 		 * @param condition
@@ -208,10 +166,19 @@ public class RoleMapper {
 			this.params.addAll(condition.params);
 			return this;
 		}
+		//排序关键字DESC
 		public Condition DESC() {
 			this.sql.append(" DESC ");
 			return this;
 		}
+		//or关键字
+		public Condition Or() {
+			this.sql.append(" OR ");
+			return this;
+		}
+		
+		
+		
 		public Condition orderBy(Object val) {
 			this.sql.append(" ORDER BY "+val);
 			return this;
@@ -223,16 +190,75 @@ public class RoleMapper {
 			return this;
 		}
 		//----------------------------------------------------------------------------------
-		public Condition andIdEquals(Object val) {
-			 this.paramCount++;
-			 this.params.add(val);
-             if(paramCount==1) {
-            	 this.sql.append(" id = ? ");	
-             }else {
-            	 this.sql.append(" and id = ? ");	
-             }
-			 return this;
+		public Condition andIdIsNull() {
+			return simplify( " id is null ");
+        }
+
+        public Condition andIdIsNotNull() {
+        	return simplify(" id is not null ");
+        }
+		
+		public Condition andIdEqualTo(Object val) {
+			return simplify(" id = ? ",val);
 		}
+		
+		public Condition andIdNotEqualTo(Object val) {
+			return simplify(" not id = ? ",val);
+		}
+		
+		public Condition andIdGreaterThan(Object val) {
+			return simplify(" id > ? ", val);
+		}
+		
+		public Condition andIdGreaterThanOrEqualTo(Object val) {
+			return simplify(" id >= ? ", val);
+		}
+		
+		public Condition andIdLessThan(Object val) {
+			return simplify(" id < ? ", val);
+		}
+		
+		public Condition andIdLessThanOrEqualTo(Object val) {
+            return simplify(" id <= ? ", val);			
+		}
+
+		public Condition andIdLike(Object val) {
+			return simplify(" id like ? ", val);
+		}
+		
+		public Condition andIdNotLike(Object val) {
+			return simplify(" id not like ? ", val);
+		}
+		
+		public Condition andIdIn(List<Object> list ) {
+			this.params.addAll(list);
+			StringBuffer sb=new StringBuffer();
+			for(Object object:list) {
+				sb.append("?,");
+			}
+			StringUtil.clearEndChar(sb);
+			return simplify(" id in ("+sb.toString()+")");
+		}
+		
+		public Condition andIdNotIn(List<Object> list) {
+			this.params.addAll(list);
+			StringBuffer sb=new StringBuffer();
+			for(Object object:list) {
+				sb.append("?,");
+			}
+			StringUtil.clearEndChar(sb);
+			return simplify(" id not in ("+sb.toString()+")");
+		}
+		
+		public Condition andIdBetweenTo(Object start,Object end){
+			return simplify(" id between ? and ?",start,end);
+		}
+		
+		public Condition andIdNotBetweenTo(Object start,Object end){
+			return simplify("id not between ? and ?", start,end);
+		}
+		//-------------------------------------------
+
 		public Condition andNameEquals(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -255,18 +281,6 @@ public class RoleMapper {
 		}
 		
 		
-		
-		
-		public Condition orIdEquals(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id = ? ");	
-			}else {
-				this.sql.append(" or id = ? ");	
-			}
-			return this;
-		}
 		public Condition orNameEquals(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -289,16 +303,6 @@ public class RoleMapper {
 		}
 		
 		
-		public Condition andIdLike(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id like ? ");	
-			}else {
-				this.sql.append(" and id like ? ");	
-			}
-			return this;
-		}
 		public Condition andNameLike(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -320,16 +324,6 @@ public class RoleMapper {
 			return this;
 		}
 		
-		public Condition orIdLike(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id like ? ");	
-			}else {
-				this.sql.append(" or id like ? ");	
-			}
-			return this;
-		}
 		public Condition orNameLike(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -352,16 +346,6 @@ public class RoleMapper {
 		}
 		
 		
-		public Condition andIdGreatThan(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id > ? ");	
-			}else {
-				this.sql.append(" and id > ? ");	
-			}
-			return this;
-		}
 		public Condition andNameGreatThan(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -384,16 +368,6 @@ public class RoleMapper {
 		}
 		
 		
-		public Condition orIdGreatThan(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id > ? ");	
-			}else {
-				this.sql.append(" or id > ? ");	
-			}
-			return this;
-		}
 		public Condition orNameGreatThan(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -417,16 +391,6 @@ public class RoleMapper {
 		
 		
 		
-		public Condition andIdLessThan(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id < ? ");	
-			}else {
-				this.sql.append(" and id < ? ");	
-			}
-			return this;
-		}
 		public Condition andNameLessThan(Object val) {
 			this.paramCount++;
 			this.params.add(val);
@@ -449,16 +413,6 @@ public class RoleMapper {
 		}
 		
 		
-		public Condition orIdLessThan(Object val) {
-			this.paramCount++;
-			this.params.add(val);
-			if(paramCount==1) {
-				this.sql.append(" id < ? ");	
-			}else {
-				this.sql.append(" or id < ? ");	
-			}
-			return this;
-		}
 		public Condition orNameLessThan(Object val) {
 			this.paramCount++;
 			this.params.add(val);

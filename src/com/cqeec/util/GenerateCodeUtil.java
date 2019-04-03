@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.lang.model.element.Modifier;
@@ -13,6 +14,8 @@ import javax.lang.model.element.Modifier;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.cqeec.pojo.Role;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -92,6 +95,49 @@ public class GenerateCodeUtil {
 	 * 生成映射器
 	 */
 	public static void generateMapper() {
+		  Properties prop=FileParseUtil.parsePropertyFile("config.properties");
+		  String targetProject=prop.getProperty("targetProject");
+		  String targetPackage=prop.getProperty("targetPackage");
+		  //获取指定包下所有的Class
+		  List<Class> list=ClassUtil.getClassListByPackage(targetProject+"\\"+StringUtil.spot2Slash(targetPackage));
+		  
+		 //生成相应java文件
+		  for(Class clazz:list) {
+			  String firstLowerClassName=StringUtil.firstLetterUpper(ClassUtil.getClassSimpleName(clazz));
+			  String className=ClassUtil.getClassSimpleName(clazz);
+			//基本的增删改方法
+	          MethodSpec insert=MethodSpec.methodBuilder("insert").
+	        		  addModifiers(Modifier.PUBLIC).
+	        		  returns(void.class).
+	        		  addParameter(clazz,firstLowerClassName).
+	        		  addStatement("String sql=$T.getInsertSql($L.getClass())",SqlUtil.class,firstLowerClassName).
+	        		  addStatement("$T.save(sql,$L)",SqlUtil.class,firstLowerClassName).
+	        		  build();
+	          MethodSpec delete=MethodSpec.methodBuilder("delete").
+	        		  addModifiers(Modifier.PUBLIC).
+	        		  returns(void.class).
+	        		  addParameter(long.class,"id").
+	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where id=?\"",SqlUtil.class,className).
+	        		  addStatement("$T.delete(sql,id)",SqlUtil.class).
+	        		  build();
+	          MethodSpec update=MethodSpec.methodBuilder("update").
+	        		  addModifiers(Modifier.PUBLIC).
+	        		  returns(void.class).
+	        		  addParameter(clazz,firstLowerClassName).
+	        		  addStatement("String sql=$T.getUpdateSql($L.getClass())",SqlUtil.class,className).
+	        		  addStatement("$T.modify(sql,$T.sortByUpdate($L))",SqlUtil.class,CollectionUtil.class,className).
+	        		  build();
+	          MethodSpec select=MethodSpec.methodBuilder("select").
+	        		  addModifiers(Modifier.PUBLIC).
+	        		  returns(clazz).
+	        		  addParameter(long.class,"id").
+	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where id=?\")",SqlUtil.class,className).
+	        		  addStatement("return SqlUtil.select(sql,$L.class,id)!=null?($L)SqlUtil.select(sql,$L.class,id).get(0):null",className,className,className).
+	        		  build();
+		  }
+		  
+		  
+		  
 		
 		
 	}

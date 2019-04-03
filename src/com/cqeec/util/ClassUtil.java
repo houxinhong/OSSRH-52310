@@ -1,12 +1,14 @@
 package com.cqeec.util;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.lang.model.element.Modifier;
@@ -93,5 +95,34 @@ public class ClassUtil {
 		String simple=getClassSimpleName(tname);
 		String  quilified=FileParseUtil.parsePropertyFile("config.properties").getProperty("targetPackage")+"."+simple;
 		return quilified;
+	}
+	/**
+	 * 获取指定包目录下的Class集合
+	 * @param targetPackage
+	 * @return
+	 */
+	public static List<Class> getClassListByPackage(String path) {
+		// TODO Auto-generated method stub
+		List<Class> list=new ArrayList<>();
+		Properties prop=FileParseUtil.parsePropertyFile("config.properties");
+		File directory=new File(path);
+		File[] files=directory.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.contains(".java");
+			}
+		});
+		for(File file:files) {
+			String simpleName=file.getName().substring(0,file.getName().indexOf(".java"));
+			String qualifiedName=prop.get("targetPackage")+"."+simpleName;
+			try {
+				list.add(Class.forName(qualifiedName));
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
 	}
 }
