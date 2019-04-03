@@ -150,20 +150,18 @@ public class SqlUtil {
 			Connection con=DBUtil.getConn();
 			PreparedStatement ps=con.prepareStatement(sql);
 			int index=1;
-			for(Object param:params) {
-				ps.setObject(index,param);
-				index++;
+			if(params!=null) {
+				for(Object param:params) {
+					ps.setObject(index,param);
+					index++;
+				}
 			}
 			ResultSet rs=ps.executeQuery();
 			while (rs.next()) {
 				Object object=mysqlData2Java(rs, clazz);
 				list.add(object);
 			}
-			if(list.size()!=0) {
-				return list;
-			}else {
-				return null;
-			}
+			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -207,9 +205,8 @@ public class SqlUtil {
 		}
 	} catch (Exception e) {
 		e.printStackTrace();
-	}
-		
-		return obj;
+	 }
+	return obj;
 	}
 	
 	

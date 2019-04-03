@@ -4,11 +4,14 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.cqeec.pojo.Role;
 import com.cqeec.pojo.RoleMapper;
+import com.cqeec.pojo.RoleMapper.Condition;
 import com.cqeec.pojo.User;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -62,12 +65,14 @@ public class SqlTest {
 	@Test
 	public void test05() {
 		RoleMapper mapper=new RoleMapper();
-		//mapper.delete(4);
-		//mapper.insert(role);
-		//mapper.update(role);
-		//Role role=new Role("7", Long.parseLong(8+""), "2");
-		System.out.println(mapper.select(1));
+		Condition condition=mapper.createCondtion();
+		condition.andDesc_Like("%员%").andIdGreatThan(2);
+		List<Role> roles=mapper.selectByCondition(condition);
+		for(Role role:roles) {
+			System.out.println(role);
+		}
 	}
+	
 	
 	
 	

@@ -4,6 +4,16 @@ import java.lang.Long;
 import java.lang.String;
 
 public class User {
+	
+	
+	
+	
+	public User(User user) {
+		 System.out.println(user.password);
+	}
+
+	//----------
+	
   private String password;
 
   private String salt;
