@@ -11,9 +11,15 @@ public class GenerateJavaFile {
 	
 	@Test
 	public void test01(){
-		  GenerateCodeUtil.generateJavaFile("config.properties");
-
-		  
 	}
+	
+	@Test
+	public void test02() {
+		GenerateCodeUtil.generateJavaFile("config.properties");
+		GenerateCodeUtil.generateMapper("config.properties");
+	}
+	
+	
+	
 	
 }

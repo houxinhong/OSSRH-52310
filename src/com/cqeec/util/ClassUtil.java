@@ -16,6 +16,7 @@ import javax.lang.model.element.Modifier;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -101,6 +102,7 @@ public class ClassUtil {
 	 * @param targetPackage
 	 * @return
 	 */
+	@Deprecated
 	public static List<Class> getClassListByPackage(String path) {
 		// TODO Auto-generated method stub
 		List<Class> list=new ArrayList<>();
@@ -109,7 +111,10 @@ public class ClassUtil {
 		File[] files=directory.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.contains(".java");
+				if(name.contains(".java")&&!name.contains("Mapper")) {
+					return true;
+				}
+				return false;
 			}
 		});
 		for(File file:files) {
@@ -124,5 +129,16 @@ public class ClassUtil {
 		}
 		
 		return list;
+	}
+	public static List<ClassName> getClassNameList(Properties prop) {
+		
+		List<TableInfo> list=TableUtil.getTables();
+		List<ClassName> list2=new ArrayList<>();
+		for(TableInfo tableInfo:list) {
+		    ClassName className=ClassName.get(prop.getProperty("targetPackage"),ClassUtil.getClassSimpleName(tableInfo.getTname())); 
+			list2.add(className);
+			GlobalParams.ClassName2TableMap.put(className,tableInfo);
+		}
+		return list2;
 	}
 }

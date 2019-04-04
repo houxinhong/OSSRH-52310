@@ -1,6 +1,8 @@
 package com.cqeec.pojo;
 
 import java.lang.Long;
+import java.lang.Override;
+import java.lang.String;
 
 public class UserRole {
   private Long uid;
@@ -40,5 +42,10 @@ public class UserRole {
 
   public void setRid(Long rid) {
     this.rid=rid;
+  }
+
+  @Override
+  public String toString() {
+    return "["+"uid"+"="+this.uid+","+"id"+"="+this.id+","+"rid"+"="+this.rid+"]";
   }
 }

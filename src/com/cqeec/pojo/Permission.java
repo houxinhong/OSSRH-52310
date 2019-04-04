@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import java.lang.Long;
+import java.lang.Override;
 import java.lang.String;
 
 public class Permission {
@@ -52,5 +53,10 @@ public class Permission {
 
   public void setUrl(String url) {
     this.url=url;
+  }
+
+  @Override
+  public String toString() {
+    return "["+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
   }
 }

@@ -1,6 +1,8 @@
 package com.cqeec.pojo;
 
 import java.lang.Long;
+import java.lang.Override;
+import java.lang.String;
 
 public class RolePermission {
   private Long pid;
@@ -40,5 +42,10 @@ public class RolePermission {
 
   public void setRid(Long rid) {
     this.rid=rid;
+  }
+
+  @Override
+  public String toString() {
+    return "["+"pid"+"="+this.pid+","+"id"+"="+this.id+","+"rid"+"="+this.rid+"]";
   }
 }

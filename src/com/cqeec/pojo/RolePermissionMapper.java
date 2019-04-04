@@ -14,30 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoleMapper {
-  public void insert(Role role) {
-    String sql=SqlUtil.getInsertSql(role.getClass());
-    SqlUtil.save(sql,role);
+public class RolePermissionMapper {
+  public void insert(RolePermission rolePermission) {
+    String sql=SqlUtil.getInsertSql(rolePermission.getClass());
+    SqlUtil.save(sql,rolePermission);
   }
 
   public void delete(long id) {
-    String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(RolePermission.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
 
-  public void update(Role role) {
-    String sql=SqlUtil.getUpdateSql(role.getClass());
-    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
+  public void update(RolePermission rolePermission) {
+    String sql=SqlUtil.getUpdateSql(rolePermission.getClass());
+    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(rolePermission));
   }
 
-  public Role select(long id) {
-    String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
-    return SqlUtil.select(sql,Role.class,id)!=null?(Role)SqlUtil.select(sql,Role.class,id).get(0):null;
+  public RolePermission select(long id) {
+    String sql=SqlUtil.getSelectSql(RolePermission.class, "where id=?");
+    return SqlUtil.select(sql,RolePermission.class,id)!=null?(RolePermission)SqlUtil.select(sql,RolePermission.class,id).get(0):null;
   }
 
-  public void batchInsert(List<Role> roles) {
-    for(Role role:roles) {
-      insert(role);
+  public void batchInsert(List<RolePermission> rolePermissions) {
+    for(RolePermission rolePermission:rolePermissions) {
+      insert(rolePermission);
     }
   }
 
@@ -53,58 +53,58 @@ public class RoleMapper {
     }
   }
 
-  public void batchUpdate(List<Role> roles) {
-    for(Role role:roles) {
-      update(role);
+  public void batchUpdate(List<RolePermission> rolePermissions) {
+    for(RolePermission rolePermission:rolePermissions) {
+      update(rolePermission);
     }
   }
 
-  public List<Role> batchSelect(long[] ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<RolePermission> batchSelect(long[] ids) {
+    List<RolePermission> rolePermissions=new ArrayList<>();
     for(long id:ids) {
-      roles.add(select(id));
+      rolePermissions.add(select(id));
     }
-    return roles;
+    return rolePermissions;
   }
 
-  public List<Role> batchSelect(List<Long> ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<RolePermission> batchSelect(List<Long> ids) {
+    List<RolePermission> rolePermissions=new ArrayList<>();
     for(Long id:ids) {
-      roles.add(select(id));
+      rolePermissions.add(select(id));
     }
-    return roles;
+    return rolePermissions;
   }
 
   public void deleteByCondition(Condition condition) {
-    List<Role> list=selectByCondition(condition);
-    for(Role role:list)  {
-      delete(role.getId());
+    List<RolePermission> list=selectByCondition(condition);
+    for(RolePermission rolePermission:list)  {
+      delete(rolePermission.getId());
     }
   }
 
-  public List<Role> selectByCondition(Condition condition) {
-    String sql=SqlUtil.getSelectSql(Role.class, condition!=null?condition.generateCondition():null);
-    List<Role> objs=new ArrayList<>();
-    List<Object> list=SqlUtil.select(sql, Role.class,condition!=null?condition.generateParams():null);
+  public List<RolePermission> selectByCondition(Condition condition) {
+    String sql=SqlUtil.getSelectSql(RolePermission.class, condition!=null?condition.generateCondition():null);
+    List<RolePermission> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, RolePermission.class,condition!=null?condition.generateParams():null);
     for(Object object:list) {
-      objs.add((Role)object);
+      objs.add((RolePermission)object);
     }
     return objs;
   }
 
   @Deprecated
-  public void insertBySql(String sql, Role role) {
-    SqlUtil.save(sql, role);
+  public void insertBySql(String sql, RolePermission rolePermission) {
+    SqlUtil.save(sql, rolePermission);
   }
 
   @Deprecated
   public void deleteBySql(String sql_, Object[] params) {
     String[] arrStr=sql_.split("where");
-    String sql=SqlUtil.getSelectSql(Role.class, null);
+    String sql=SqlUtil.getSelectSql(RolePermission.class, null);
     sql+=" where "+arrStr[1];
-    List<Object> list=SqlUtil.select(sql,Role.class, params);
+    List<Object> list=SqlUtil.select(sql,RolePermission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where id = ?", ((Role)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(RolePermission.class)+"where id = ?", ((RolePermission)object).getId());
     }
   }
 
@@ -114,11 +114,11 @@ public class RoleMapper {
   }
 
   @Deprecated
-  public List<Role> selectBySql(String sql, Object[] params) {
-    List<Role> list=new ArrayList<>();
-    List<Object> temps=SqlUtil.select(sql, Role.class, params);
+  public List<RolePermission> selectBySql(String sql, Object[] params) {
+    List<RolePermission> list=new ArrayList<>();
+    List<Object> temps=SqlUtil.select(sql, RolePermission.class, params);
     for(Object temp:temps) {
-      list.add((Role)temp);
+      list.add((RolePermission)temp);
     }
     return list;
   }
@@ -145,72 +145,72 @@ public class RoleMapper {
     Condition() {
     }
 
-    public Condition andNameIsNull() {
-      return simplify(" Name is null ",null);
+    public Condition andPidIsNull() {
+      return simplify(" Pid is null ",null);
     }
 
-    public Condition andNameNotNull() {
+    public Condition andPidNotNull() {
       return simplify(" id is not null ",null);
     }
 
-    public Condition andNameEqualTo(Object val) {
-      return simplify(" Name = ? ",new Object[]{val});
+    public Condition andPidEqualTo(Object val) {
+      return simplify(" Pid = ? ",new Object[]{val});
     }
 
-    public Condition andNameNotEqualTo(Object val) {
-      return simplify(" Name != ? ",new Object[]{val});
+    public Condition andPidNotEqualTo(Object val) {
+      return simplify(" Pid != ? ",new Object[]{val});
     }
 
-    public Condition andNameGreaterThan(Object val) {
-      return simplify(" Name > ? ", new Object[]{val});
+    public Condition andPidGreaterThan(Object val) {
+      return simplify(" Pid > ? ", new Object[]{val});
     }
 
-    public Condition andNameGreaterThanOrEqualTo(Object val) {
-      return simplify(" Name >= ? ", new Object[]{val});
+    public Condition andPidGreaterThanOrEqualTo(Object val) {
+      return simplify(" Pid >= ? ", new Object[]{val});
     }
 
-    public Condition andNameLessThan(Object val) {
-      return simplify(" Name < ? ", new Object[]{val});
+    public Condition andPidLessThan(Object val) {
+      return simplify(" Pid < ? ", new Object[]{val});
     }
 
-    public Condition andNameLessThanOrEqualTo(Object val) {
-       return simplify(" Name <= ? ", new Object[]{val});
+    public Condition andPidLessThanOrEqualTo(Object val) {
+       return simplify(" Pid <= ? ", new Object[]{val});
     }
 
-    public Condition andNameLike(Object val) {
-      return simplify(" Name like ? ", new Object[]{val});
+    public Condition andPidLike(Object val) {
+      return simplify(" Pid like ? ", new Object[]{val});
     }
 
-    public Condition andNameNotLike(Object val) {
-      return simplify(" Name not like ? ", new Object[]{val});
+    public Condition andPidNotLike(Object val) {
+      return simplify(" Pid not like ? ", new Object[]{val});
     }
 
-    public Condition andNameIn(List<Object> list) {
+    public Condition andPidIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" Name in ("+sb.toString()+")",null);
+      return simplify(" Pid in ("+sb.toString()+")",null);
     }
 
-    public Condition andNameNotIn(List<Object> list) {
+    public Condition andPidNotIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" Name not in ("+sb.toString()+")",null);
+      return simplify(" Pid not in ("+sb.toString()+")",null);
     }
 
-    public Condition andNameBetweenTo(Object start, Object end) {
-      return simplify(" Name between ? and ?",new Object[]{start,end});
+    public Condition andPidBetweenTo(Object start, Object end) {
+      return simplify(" Pid between ? and ?",new Object[]{start,end});
     }
 
-    public Condition andNameNotBetweenTo(Object start, Object end) {
-      return simplify(" Name not between ? and ?",new Object[]{start,end});
+    public Condition andPidNotBetweenTo(Object start, Object end) {
+      return simplify(" Pid not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdIsNull() {
@@ -281,72 +281,72 @@ public class RoleMapper {
       return simplify(" Id not between ? and ?",new Object[]{start,end});
     }
 
-    public Condition andDesc_IsNull() {
-      return simplify(" Desc_ is null ",null);
+    public Condition andRidIsNull() {
+      return simplify(" Rid is null ",null);
     }
 
-    public Condition andDesc_NotNull() {
+    public Condition andRidNotNull() {
       return simplify(" id is not null ",null);
     }
 
-    public Condition andDesc_EqualTo(Object val) {
-      return simplify(" Desc_ = ? ",new Object[]{val});
+    public Condition andRidEqualTo(Object val) {
+      return simplify(" Rid = ? ",new Object[]{val});
     }
 
-    public Condition andDesc_NotEqualTo(Object val) {
-      return simplify(" Desc_ != ? ",new Object[]{val});
+    public Condition andRidNotEqualTo(Object val) {
+      return simplify(" Rid != ? ",new Object[]{val});
     }
 
-    public Condition andDesc_GreaterThan(Object val) {
-      return simplify(" Desc_ > ? ", new Object[]{val});
+    public Condition andRidGreaterThan(Object val) {
+      return simplify(" Rid > ? ", new Object[]{val});
     }
 
-    public Condition andDesc_GreaterThanOrEqualTo(Object val) {
-      return simplify(" Desc_ >= ? ", new Object[]{val});
+    public Condition andRidGreaterThanOrEqualTo(Object val) {
+      return simplify(" Rid >= ? ", new Object[]{val});
     }
 
-    public Condition andDesc_LessThan(Object val) {
-      return simplify(" Desc_ < ? ", new Object[]{val});
+    public Condition andRidLessThan(Object val) {
+      return simplify(" Rid < ? ", new Object[]{val});
     }
 
-    public Condition andDesc_LessThanOrEqualTo(Object val) {
-       return simplify(" Desc_ <= ? ", new Object[]{val});
+    public Condition andRidLessThanOrEqualTo(Object val) {
+       return simplify(" Rid <= ? ", new Object[]{val});
     }
 
-    public Condition andDesc_Like(Object val) {
-      return simplify(" Desc_ like ? ", new Object[]{val});
+    public Condition andRidLike(Object val) {
+      return simplify(" Rid like ? ", new Object[]{val});
     }
 
-    public Condition andDesc_NotLike(Object val) {
-      return simplify(" Desc_ not like ? ", new Object[]{val});
+    public Condition andRidNotLike(Object val) {
+      return simplify(" Rid not like ? ", new Object[]{val});
     }
 
-    public Condition andDesc_In(List<Object> list) {
+    public Condition andRidIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" Desc_ in ("+sb.toString()+")",null);
+      return simplify(" Rid in ("+sb.toString()+")",null);
     }
 
-    public Condition andDesc_NotIn(List<Object> list) {
+    public Condition andRidNotIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" Desc_ not in ("+sb.toString()+")",null);
+      return simplify(" Rid not in ("+sb.toString()+")",null);
     }
 
-    public Condition andDesc_BetweenTo(Object start, Object end) {
-      return simplify(" Desc_ between ? and ?",new Object[]{start,end});
+    public Condition andRidBetweenTo(Object start, Object end) {
+      return simplify(" Rid between ? and ?",new Object[]{start,end});
     }
 
-    public Condition andDesc_NotBetweenTo(Object start, Object end) {
-      return simplify(" Desc_ not between ? and ?",new Object[]{start,end});
+    public Condition andRidNotBetweenTo(Object start, Object end) {
+      return simplify(" Rid not between ? and ?",new Object[]{start,end});
     }
 
     public Condition limit(long start, long end) {

@@ -6,11 +6,10 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import com.cqeec.pojo.Role;
-import com.cqeec.pojo.RoleMapper.Condition;
 import com.cqeec.util.ClassUtil;
 import com.cqeec.util.FileParseUtil;
 import com.cqeec.util.StringUtil;
+import com.squareup.javapoet.ClassName;
 
 public class FileTest {
 
@@ -35,8 +34,8 @@ public class FileTest {
 	
 	@Test
 	public void test03() throws InstantiationException, IllegalAccessException {
-		Class ee=Role.class;
-		System.out.println(ee.newInstance() instanceof Role);
+		List<ClassName> list=ClassUtil.getClassNameList(FileParseUtil.parsePropertyFile("config.properties"));
+		System.out.println(list.size());;
 	}
 	
 	

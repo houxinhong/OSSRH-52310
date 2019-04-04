@@ -14,30 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoleMapper {
-  public void insert(Role role) {
-    String sql=SqlUtil.getInsertSql(role.getClass());
-    SqlUtil.save(sql,role);
+public class PermissionMapper {
+  public void insert(Permission permission) {
+    String sql=SqlUtil.getInsertSql(permission.getClass());
+    SqlUtil.save(sql,permission);
   }
 
   public void delete(long id) {
-    String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(Permission.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
 
-  public void update(Role role) {
-    String sql=SqlUtil.getUpdateSql(role.getClass());
-    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
+  public void update(Permission permission) {
+    String sql=SqlUtil.getUpdateSql(permission.getClass());
+    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(permission));
   }
 
-  public Role select(long id) {
-    String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
-    return SqlUtil.select(sql,Role.class,id)!=null?(Role)SqlUtil.select(sql,Role.class,id).get(0):null;
+  public Permission select(long id) {
+    String sql=SqlUtil.getSelectSql(Permission.class, "where id=?");
+    return SqlUtil.select(sql,Permission.class,id)!=null?(Permission)SqlUtil.select(sql,Permission.class,id).get(0):null;
   }
 
-  public void batchInsert(List<Role> roles) {
-    for(Role role:roles) {
-      insert(role);
+  public void batchInsert(List<Permission> permissions) {
+    for(Permission permission:permissions) {
+      insert(permission);
     }
   }
 
@@ -53,58 +53,58 @@ public class RoleMapper {
     }
   }
 
-  public void batchUpdate(List<Role> roles) {
-    for(Role role:roles) {
-      update(role);
+  public void batchUpdate(List<Permission> permissions) {
+    for(Permission permission:permissions) {
+      update(permission);
     }
   }
 
-  public List<Role> batchSelect(long[] ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<Permission> batchSelect(long[] ids) {
+    List<Permission> permissions=new ArrayList<>();
     for(long id:ids) {
-      roles.add(select(id));
+      permissions.add(select(id));
     }
-    return roles;
+    return permissions;
   }
 
-  public List<Role> batchSelect(List<Long> ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<Permission> batchSelect(List<Long> ids) {
+    List<Permission> permissions=new ArrayList<>();
     for(Long id:ids) {
-      roles.add(select(id));
+      permissions.add(select(id));
     }
-    return roles;
+    return permissions;
   }
 
   public void deleteByCondition(Condition condition) {
-    List<Role> list=selectByCondition(condition);
-    for(Role role:list)  {
-      delete(role.getId());
+    List<Permission> list=selectByCondition(condition);
+    for(Permission permission:list)  {
+      delete(permission.getId());
     }
   }
 
-  public List<Role> selectByCondition(Condition condition) {
-    String sql=SqlUtil.getSelectSql(Role.class, condition!=null?condition.generateCondition():null);
-    List<Role> objs=new ArrayList<>();
-    List<Object> list=SqlUtil.select(sql, Role.class,condition!=null?condition.generateParams():null);
+  public List<Permission> selectByCondition(Condition condition) {
+    String sql=SqlUtil.getSelectSql(Permission.class, condition!=null?condition.generateCondition():null);
+    List<Permission> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, Permission.class,condition!=null?condition.generateParams():null);
     for(Object object:list) {
-      objs.add((Role)object);
+      objs.add((Permission)object);
     }
     return objs;
   }
 
   @Deprecated
-  public void insertBySql(String sql, Role role) {
-    SqlUtil.save(sql, role);
+  public void insertBySql(String sql, Permission permission) {
+    SqlUtil.save(sql, permission);
   }
 
   @Deprecated
   public void deleteBySql(String sql_, Object[] params) {
     String[] arrStr=sql_.split("where");
-    String sql=SqlUtil.getSelectSql(Role.class, null);
+    String sql=SqlUtil.getSelectSql(Permission.class, null);
     sql+=" where "+arrStr[1];
-    List<Object> list=SqlUtil.select(sql,Role.class, params);
+    List<Object> list=SqlUtil.select(sql,Permission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where id = ?", ((Role)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(Permission.class)+"where id = ?", ((Permission)object).getId());
     }
   }
 
@@ -114,11 +114,11 @@ public class RoleMapper {
   }
 
   @Deprecated
-  public List<Role> selectBySql(String sql, Object[] params) {
-    List<Role> list=new ArrayList<>();
-    List<Object> temps=SqlUtil.select(sql, Role.class, params);
+  public List<Permission> selectBySql(String sql, Object[] params) {
+    List<Permission> list=new ArrayList<>();
+    List<Object> temps=SqlUtil.select(sql, Permission.class, params);
     for(Object temp:temps) {
-      list.add((Role)temp);
+      list.add((Permission)temp);
     }
     return list;
   }
@@ -347,6 +347,74 @@ public class RoleMapper {
 
     public Condition andDesc_NotBetweenTo(Object start, Object end) {
       return simplify(" Desc_ not between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andUrlIsNull() {
+      return simplify(" Url is null ",null);
+    }
+
+    public Condition andUrlNotNull() {
+      return simplify(" id is not null ",null);
+    }
+
+    public Condition andUrlEqualTo(Object val) {
+      return simplify(" Url = ? ",new Object[]{val});
+    }
+
+    public Condition andUrlNotEqualTo(Object val) {
+      return simplify(" Url != ? ",new Object[]{val});
+    }
+
+    public Condition andUrlGreaterThan(Object val) {
+      return simplify(" Url > ? ", new Object[]{val});
+    }
+
+    public Condition andUrlGreaterThanOrEqualTo(Object val) {
+      return simplify(" Url >= ? ", new Object[]{val});
+    }
+
+    public Condition andUrlLessThan(Object val) {
+      return simplify(" Url < ? ", new Object[]{val});
+    }
+
+    public Condition andUrlLessThanOrEqualTo(Object val) {
+       return simplify(" Url <= ? ", new Object[]{val});
+    }
+
+    public Condition andUrlLike(Object val) {
+      return simplify(" Url like ? ", new Object[]{val});
+    }
+
+    public Condition andUrlNotLike(Object val) {
+      return simplify(" Url not like ? ", new Object[]{val});
+    }
+
+    public Condition andUrlIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Url in ("+sb.toString()+")",null);
+    }
+
+    public Condition andUrlNotIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Url not in ("+sb.toString()+")",null);
+    }
+
+    public Condition andUrlBetweenTo(Object start, Object end) {
+      return simplify(" Url between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andUrlNotBetweenTo(Object start, Object end) {
+      return simplify(" Url not between ? and ?",new Object[]{start,end});
     }
 
     public Condition limit(long start, long end) {

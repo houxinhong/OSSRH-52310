@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -82,6 +83,15 @@ public class TableInfo {
 		this.tname = tname;
 		this.columns = columns;
 		this.priKeys = priKeys;
+	}
+	
+	public List<ColumnInfo> getCloumnInfoList(){
+		List<ColumnInfo> list=new ArrayList<>();
+		Set<String> keys=columns.keySet();
+		for(String key:keys) {
+			list.add(columns.get(key));
+		}
+		return list; 
 	}
 
 	

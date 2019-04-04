@@ -1,19 +1,10 @@
 package com.cqeec.pojo;
 
 import java.lang.Long;
+import java.lang.Override;
 import java.lang.String;
 
 public class User {
-	
-	
-	
-	
-	public User(User user) {
-		 System.out.println(user.password);
-	}
-
-	//----------
-	
   private String password;
 
   private String salt;
@@ -62,5 +53,10 @@ public class User {
 
   public void setId(Long id) {
     this.id=id;
+  }
+
+  @Override
+  public String toString() {
+    return "["+"password"+"="+this.password+","+"salt"+"="+this.salt+","+"name"+"="+this.name+","+"id"+"="+this.id+"]";
   }
 }

@@ -14,30 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoleMapper {
-  public void insert(Role role) {
-    String sql=SqlUtil.getInsertSql(role.getClass());
-    SqlUtil.save(sql,role);
+public class UserMapper {
+  public void insert(User user) {
+    String sql=SqlUtil.getInsertSql(user.getClass());
+    SqlUtil.save(sql,user);
   }
 
   public void delete(long id) {
-    String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(User.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
 
-  public void update(Role role) {
-    String sql=SqlUtil.getUpdateSql(role.getClass());
-    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
+  public void update(User user) {
+    String sql=SqlUtil.getUpdateSql(user.getClass());
+    SqlUtil.modify(sql,CollectionUtil.sortByUpdate(user));
   }
 
-  public Role select(long id) {
-    String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
-    return SqlUtil.select(sql,Role.class,id)!=null?(Role)SqlUtil.select(sql,Role.class,id).get(0):null;
+  public User select(long id) {
+    String sql=SqlUtil.getSelectSql(User.class, "where id=?");
+    return SqlUtil.select(sql,User.class,id)!=null?(User)SqlUtil.select(sql,User.class,id).get(0):null;
   }
 
-  public void batchInsert(List<Role> roles) {
-    for(Role role:roles) {
-      insert(role);
+  public void batchInsert(List<User> users) {
+    for(User user:users) {
+      insert(user);
     }
   }
 
@@ -53,58 +53,58 @@ public class RoleMapper {
     }
   }
 
-  public void batchUpdate(List<Role> roles) {
-    for(Role role:roles) {
-      update(role);
+  public void batchUpdate(List<User> users) {
+    for(User user:users) {
+      update(user);
     }
   }
 
-  public List<Role> batchSelect(long[] ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<User> batchSelect(long[] ids) {
+    List<User> users=new ArrayList<>();
     for(long id:ids) {
-      roles.add(select(id));
+      users.add(select(id));
     }
-    return roles;
+    return users;
   }
 
-  public List<Role> batchSelect(List<Long> ids) {
-    List<Role> roles=new ArrayList<>();
+  public List<User> batchSelect(List<Long> ids) {
+    List<User> users=new ArrayList<>();
     for(Long id:ids) {
-      roles.add(select(id));
+      users.add(select(id));
     }
-    return roles;
+    return users;
   }
 
   public void deleteByCondition(Condition condition) {
-    List<Role> list=selectByCondition(condition);
-    for(Role role:list)  {
-      delete(role.getId());
+    List<User> list=selectByCondition(condition);
+    for(User user:list)  {
+      delete(user.getId());
     }
   }
 
-  public List<Role> selectByCondition(Condition condition) {
-    String sql=SqlUtil.getSelectSql(Role.class, condition!=null?condition.generateCondition():null);
-    List<Role> objs=new ArrayList<>();
-    List<Object> list=SqlUtil.select(sql, Role.class,condition!=null?condition.generateParams():null);
+  public List<User> selectByCondition(Condition condition) {
+    String sql=SqlUtil.getSelectSql(User.class, condition!=null?condition.generateCondition():null);
+    List<User> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, User.class,condition!=null?condition.generateParams():null);
     for(Object object:list) {
-      objs.add((Role)object);
+      objs.add((User)object);
     }
     return objs;
   }
 
   @Deprecated
-  public void insertBySql(String sql, Role role) {
-    SqlUtil.save(sql, role);
+  public void insertBySql(String sql, User user) {
+    SqlUtil.save(sql, user);
   }
 
   @Deprecated
   public void deleteBySql(String sql_, Object[] params) {
     String[] arrStr=sql_.split("where");
-    String sql=SqlUtil.getSelectSql(Role.class, null);
+    String sql=SqlUtil.getSelectSql(User.class, null);
     sql+=" where "+arrStr[1];
-    List<Object> list=SqlUtil.select(sql,Role.class, params);
+    List<Object> list=SqlUtil.select(sql,User.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where id = ?", ((Role)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(User.class)+"where id = ?", ((User)object).getId());
     }
   }
 
@@ -114,11 +114,11 @@ public class RoleMapper {
   }
 
   @Deprecated
-  public List<Role> selectBySql(String sql, Object[] params) {
-    List<Role> list=new ArrayList<>();
-    List<Object> temps=SqlUtil.select(sql, Role.class, params);
+  public List<User> selectBySql(String sql, Object[] params) {
+    List<User> list=new ArrayList<>();
+    List<Object> temps=SqlUtil.select(sql, User.class, params);
     for(Object temp:temps) {
-      list.add((Role)temp);
+      list.add((User)temp);
     }
     return list;
   }
@@ -143,6 +143,142 @@ public class RoleMapper {
     }
 
     Condition() {
+    }
+
+    public Condition andPasswordIsNull() {
+      return simplify(" Password is null ",null);
+    }
+
+    public Condition andPasswordNotNull() {
+      return simplify(" id is not null ",null);
+    }
+
+    public Condition andPasswordEqualTo(Object val) {
+      return simplify(" Password = ? ",new Object[]{val});
+    }
+
+    public Condition andPasswordNotEqualTo(Object val) {
+      return simplify(" Password != ? ",new Object[]{val});
+    }
+
+    public Condition andPasswordGreaterThan(Object val) {
+      return simplify(" Password > ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordGreaterThanOrEqualTo(Object val) {
+      return simplify(" Password >= ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordLessThan(Object val) {
+      return simplify(" Password < ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordLessThanOrEqualTo(Object val) {
+       return simplify(" Password <= ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordLike(Object val) {
+      return simplify(" Password like ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordNotLike(Object val) {
+      return simplify(" Password not like ? ", new Object[]{val});
+    }
+
+    public Condition andPasswordIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Password in ("+sb.toString()+")",null);
+    }
+
+    public Condition andPasswordNotIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Password not in ("+sb.toString()+")",null);
+    }
+
+    public Condition andPasswordBetweenTo(Object start, Object end) {
+      return simplify(" Password between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andPasswordNotBetweenTo(Object start, Object end) {
+      return simplify(" Password not between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andSaltIsNull() {
+      return simplify(" Salt is null ",null);
+    }
+
+    public Condition andSaltNotNull() {
+      return simplify(" id is not null ",null);
+    }
+
+    public Condition andSaltEqualTo(Object val) {
+      return simplify(" Salt = ? ",new Object[]{val});
+    }
+
+    public Condition andSaltNotEqualTo(Object val) {
+      return simplify(" Salt != ? ",new Object[]{val});
+    }
+
+    public Condition andSaltGreaterThan(Object val) {
+      return simplify(" Salt > ? ", new Object[]{val});
+    }
+
+    public Condition andSaltGreaterThanOrEqualTo(Object val) {
+      return simplify(" Salt >= ? ", new Object[]{val});
+    }
+
+    public Condition andSaltLessThan(Object val) {
+      return simplify(" Salt < ? ", new Object[]{val});
+    }
+
+    public Condition andSaltLessThanOrEqualTo(Object val) {
+       return simplify(" Salt <= ? ", new Object[]{val});
+    }
+
+    public Condition andSaltLike(Object val) {
+      return simplify(" Salt like ? ", new Object[]{val});
+    }
+
+    public Condition andSaltNotLike(Object val) {
+      return simplify(" Salt not like ? ", new Object[]{val});
+    }
+
+    public Condition andSaltIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Salt in ("+sb.toString()+")",null);
+    }
+
+    public Condition andSaltNotIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify(" Salt not in ("+sb.toString()+")",null);
+    }
+
+    public Condition andSaltBetweenTo(Object start, Object end) {
+      return simplify(" Salt between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andSaltNotBetweenTo(Object start, Object end) {
+      return simplify(" Salt not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameIsNull() {
@@ -279,74 +415,6 @@ public class RoleMapper {
 
     public Condition andIdNotBetweenTo(Object start, Object end) {
       return simplify(" Id not between ? and ?",new Object[]{start,end});
-    }
-
-    public Condition andDesc_IsNull() {
-      return simplify(" Desc_ is null ",null);
-    }
-
-    public Condition andDesc_NotNull() {
-      return simplify(" id is not null ",null);
-    }
-
-    public Condition andDesc_EqualTo(Object val) {
-      return simplify(" Desc_ = ? ",new Object[]{val});
-    }
-
-    public Condition andDesc_NotEqualTo(Object val) {
-      return simplify(" Desc_ != ? ",new Object[]{val});
-    }
-
-    public Condition andDesc_GreaterThan(Object val) {
-      return simplify(" Desc_ > ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_GreaterThanOrEqualTo(Object val) {
-      return simplify(" Desc_ >= ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_LessThan(Object val) {
-      return simplify(" Desc_ < ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_LessThanOrEqualTo(Object val) {
-       return simplify(" Desc_ <= ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_Like(Object val) {
-      return simplify(" Desc_ like ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_NotLike(Object val) {
-      return simplify(" Desc_ not like ? ", new Object[]{val});
-    }
-
-    public Condition andDesc_In(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify(" Desc_ in ("+sb.toString()+")",null);
-    }
-
-    public Condition andDesc_NotIn(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify(" Desc_ not in ("+sb.toString()+")",null);
-    }
-
-    public Condition andDesc_BetweenTo(Object start, Object end) {
-      return simplify(" Desc_ between ? and ?",new Object[]{start,end});
-    }
-
-    public Condition andDesc_NotBetweenTo(Object start, Object end) {
-      return simplify(" Desc_ not between ? and ?",new Object[]{start,end});
     }
 
     public Condition limit(long start, long end) {

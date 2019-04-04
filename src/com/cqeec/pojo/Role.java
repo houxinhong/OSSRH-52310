@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import java.lang.Long;
+import java.lang.Override;
 import java.lang.String;
 
 public class Role {
@@ -43,9 +44,8 @@ public class Role {
     this.desc_=desc_;
   }
 
-@Override
-public String toString() {
-	return "Role [name=" + name + ", id=" + id + ", desc_=" + desc_ + "]";
-}
-  
+  @Override
+  public String toString() {
+    return "["+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+"]";
+  }
 }

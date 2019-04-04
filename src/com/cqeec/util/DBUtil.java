@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import com.cqeec.bean.Configuration;
-import com.cqeec.pojo.Role;
 
 
 public class DBUtil {

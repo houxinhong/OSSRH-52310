@@ -13,7 +13,6 @@ import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
-import com.cqeec.pojo.Role;
 
 
 public class SqlUtil {
@@ -106,6 +105,7 @@ public class SqlUtil {
 	
 	
 	public static void modify(String sql,Object... params) {
+		System.out.println(sql);
 		try {
 			Connection con=DBUtil.getConn();
 			PreparedStatement ps=con.prepareStatement(sql);
@@ -120,16 +120,17 @@ public class SqlUtil {
 		}
 	}
 
-	public static void save(String sql, Role role) {
-		 Field[] fields=role.getClass().getDeclaredFields(); 
+	public static void save(String sql, Object obj) {
+		System.out.println(sql);
+		 Field[] fields=obj.getClass().getDeclaredFields(); 
 	        Object[] params=new Object[fields.length];
-	        Method[] methods=role.getClass().getDeclaredMethods();
+	        Method[] methods=obj.getClass().getDeclaredMethods();
 	        int index=0;
 	        for(Field field:fields) {
 	        	for(Method method:methods) {
 	        		if(method.getName().equals("get"+StringUtil.firstLetterUpper(field.getName()))) {
 	        			try {
-							params[index]=method.invoke(role);
+							params[index]=method.invoke(obj);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -141,10 +142,12 @@ public class SqlUtil {
 	}
 
 	public static void delete(String sql, long id) {
+		System.out.println(sql);
            modify(sql, id);		
 	}
 
 	public static List<Object> select(String sql,Class clazz,Object... params) {
+		System.out.println(sql);
 		try {
 			List<Object> list=new ArrayList<>();
 			Connection con=DBUtil.getConn();

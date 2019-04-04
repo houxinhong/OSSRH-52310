@@ -1,4 +1,7 @@
 package com.cqeec.util;
+
+import java.util.Map;
+
 public class StringUtil {
 	
 	
@@ -33,6 +36,17 @@ public class StringUtil {
 	
 	public static String spot2Slash(String str) {
 		return str.replace('.', '\\');
+	}
+	
+	
+	public static String parseCache(Map<Integer, String> cache) {
+		StringBuffer sb=new StringBuffer();
+       for(int i=1;i<=10;i++) {
+    	   if(cache.containsKey(i)) {
+    		   sb.append(cache.get(i));
+    	   }
+       }
+		return sb.toString();
 	}
 	
 	

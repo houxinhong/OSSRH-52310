@@ -1,5 +1,6 @@
 package test;
 
+import java.awt.geom.Area;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -81,13 +82,14 @@ public class SqlTest {
 			System.out.println(role);
 		}*/
 		RoleMapper mapper=new RoleMapper();
+		Condition condition=mapper.createCondtion();
+		Condition condition2=mapper.createCondtion();
+		condition.andDesc_Like("%员%").limit(0, 2).orderBy("id");
 		
-		
-		List<Role> roles=mapper.selectBySql("select * from role where id=2",null);
+		List<Role> roles=mapper.selectByCondition(condition);
 		for(Role role:roles) {
 			System.out.println(role);
 		}
-		
 	}
 	
 	
