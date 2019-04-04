@@ -277,10 +277,10 @@ public class GenerateCodeUtil {
 	  	        		       addStatement("this.params.add(param)").
 	  	        		       endControlFlow().
 	  	        		  endControlFlow().
-	  	        		  beginControlFlow("if(paramCount==1)").
-	  	        		  addStatement("this.sql.append(str)").
+	  	        		  beginControlFlow("if(paramCount>1&&!StringUtil.isLastKeywordEqualToOR(sql))").
+	  	        		  addStatement("this.sql.append(\" and \"+str)").	  	        		  
 	  	        		  nextControlFlow("else").
-	                      addStatement("this.sql.append(\" and \"+str)").	  	        		  
+	  	        		  addStatement("this.sql.append(str)").
 	  	        		  addStatement("return this").
 	  	        		  endControlFlow().
 	  	        		  addStatement("return this").

@@ -190,10 +190,10 @@ public class PermissionMapper {
           this.params.add(param);
         }
       }
-      if(paramCount==1) {
-        this.sql.append(str);
-      } else {
+      if(paramCount>1&&!StringUtil.isLastKeywordEqualToOR(sql)) {
         this.sql.append(" and "+str);
+      } else {
+        this.sql.append(str);
         return this;
       }
       return this;

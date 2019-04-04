@@ -48,7 +48,15 @@ public class StringUtil {
        }
 		return sb.toString();
 	}
-	
+	/**
+	 * 截取字符串缓存最后四位，判断其中是否有OR
+	 * @param sb
+	 * @return
+	 */
+	public static boolean isLastKeywordEqualToOR(StringBuffer sb){
+          int length=sb.length();
+          return sb.subSequence(length-4, length).toString().contains("OR");          
+	}
 	
 	
 	

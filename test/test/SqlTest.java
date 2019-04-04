@@ -6,7 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -18,6 +21,8 @@ import com.cqeec.pojo.User;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.GlobalParams;
 import com.cqeec.util.SqlUtil;
+import com.cqeec.util.StringUtil;
+import com.mysql.fabric.xmlrpc.base.Data;
 
 public class SqlTest {
 	/**
@@ -77,22 +82,27 @@ public class SqlTest {
 	
 	@Test
 	public void test06() {
-		RoleMapper mapper=new RoleMapper();
-		Condition condition=mapper.createCondtion();
-		Condition condition2=mapper.createCondtion();
-		List<Object> list=new ArrayList<>();
-		condition.andDesc_Like("%员%").limit(0, 2).orderBy("id",false);
+		DBUtil.enableTransaction();
+		RoleMapper roleMapper=new RoleMapper();
+		roleMapper.insert(new Role("12", Long.valueOf(31), "6666"));
+		DBUtil.commitTransaction();
 		
-		List<Role> roles=mapper.selectByCondition(condition);
-		for(Role role:roles) {
+		for(Role role:roleMapper.selectByCondition(null)) {
 			System.out.println(role);
 		}
 	}
 	
 	@Test
-	public void test07() {
-		Properties properties=GlobalParams.properties;
-		System.out.println(properties.get("url"));
+	public void test07() throws SQLException {
+		
+		Connection connection=DBUtil.getConn();
+		System.out.println(connection.getAutoCommit());
+		connection.setAutoCommit(false);
+		System.out.println(connection.getAutoCommit());
+		Map<String, String> a=new HashMap<>();
+		System.out.println(a.remove("1"));
+		
+		
 	}
 	
 	

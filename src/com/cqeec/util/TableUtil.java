@@ -48,7 +48,7 @@ public class TableUtil {
 				list.add(ti);
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 			return null;
 		}
 		return list;
