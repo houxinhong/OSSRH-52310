@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import com.cqeec.pojo.RoleMapper;
 import com.cqeec.pojo.RoleMapper.Condition;
 import com.cqeec.pojo.User;
 import com.cqeec.util.DBUtil;
+import com.cqeec.util.GlobalParams;
 import com.cqeec.util.SqlUtil;
 
 public class SqlTest {
@@ -75,16 +77,11 @@ public class SqlTest {
 	
 	@Test
 	public void test06() {
-		/*RoleMapper mapper=new RoleMapper();
-		mapper.insertBySql("insert role values(?,?,?)", new Role("123456",Long.valueOf(20),"123456"));
-		List<Role> roles=mapper.selectByCondition(null);
-		for(Role role:roles) {
-			System.out.println(role);
-		}*/
 		RoleMapper mapper=new RoleMapper();
 		Condition condition=mapper.createCondtion();
 		Condition condition2=mapper.createCondtion();
-		condition.andDesc_Like("%员%").limit(0, 2).orderBy("id");
+		List<Object> list=new ArrayList<>();
+		condition.andDesc_Like("%员%").limit(0, 2).orderBy("id",false);
 		
 		List<Role> roles=mapper.selectByCondition(condition);
 		for(Role role:roles) {
@@ -92,6 +89,11 @@ public class SqlTest {
 		}
 	}
 	
+	@Test
+	public void test07() {
+		Properties properties=GlobalParams.properties;
+		System.out.println(properties.get("url"));
+	}
 	
 	
 	

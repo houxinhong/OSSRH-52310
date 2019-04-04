@@ -2,8 +2,6 @@ package com.cqeec.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +28,9 @@ public class GenerateCodeUtil {
 	 * 生成映射器
 	 */
 	public static void generateMapper(String path) {
-		  Properties prop=FileParseUtil.parsePropertyFile(path);
-		  String targetProject=prop.getProperty("targetProject");
-		  String targetPackage=prop.getProperty("targetPackage");
 		  //之前获取class会去包中去找相应的java文件（所以执行该方法之前会必须有java实体类）
 		  //为了解耦----这里这样是改变了---通过拼接字符串得到相应的ClassName对象
+		  Properties prop=GlobalParams.properties;
 		  List<ClassName> list=ClassUtil.getClassNameList(prop);
 		  
 		 //生成相应java文件
@@ -331,6 +327,7 @@ public class GenerateCodeUtil {
 	                
 	                MethodSpec DESC=MethodSpec.methodBuilder("DESC").
 	                		addModifiers(Modifier.PUBLIC).
+	                		addAnnotation(Deprecated.class).
 	                		returns(condition).
 	                		addStatement("this.cache.put(2,\" DESC \")").
 	                		addStatement("return this").
@@ -344,17 +341,45 @@ public class GenerateCodeUtil {
 	                		addStatement("return this").
 	                		build();
 	                
+	                MethodSpec orderBy2=MethodSpec.methodBuilder("orderBy").
+	                		addModifiers(Modifier.PUBLIC).
+	                		addJavadoc("第一个参数是参与排序字段名称(String)，第二参数为false时为降序排序(boolean)").
+	                		addParameter(Object.class,"val").
+	                		addParameter(Object.class,"flag").
+	                		returns(condition).
+	                		addStatement("this.cache.put(1,\" order By \"+val+\" \")").
+	                		beginControlFlow("if(!(Boolean)flag)").
+	                		addStatement("$N()",DESC).
+	                		endControlFlow().
+	                		addStatement("return this").
+	                		build();
+	                
 	                MethodSpec limit=MethodSpec.methodBuilder("limit").
 	                		addModifiers(Modifier.PUBLIC).
 	                		addParameter(long.class,"start").
 	                		addParameter(long.class,"end").
 	                		returns(condition).
-	                		addStatement("this.cache.put(3,\" limit ?,? \")").
-	                		addStatement("this.params.add(start)").
-	                		addStatement("this.params.add(end)").
+	                		addStatement("this.cache.put(3,\" limit \" +start+\" , \"+end)").
 	                		addStatement("return this").
 	                		build();
-	                
+	              //work condtion添加方法
+		             conditionTypeBuilder.addMethod(limit);   
+		             conditionTypeBuilder.addMethod(Or);   
+		             conditionTypeBuilder.addMethod(orderBy);   
+		             conditionTypeBuilder.addMethod(orderBy2);
+		             conditionTypeBuilder.addMethod(includ);
+		             conditionTypeBuilder.addMethod(DESC);
+		             conditionTypeBuilder.addMethod(havaParamConstructor);   
+		             conditionTypeBuilder.addMethod(noParamConstructor);   
+		             conditionTypeBuilder.addMethod(simplify);   
+		             conditionTypeBuilder.addMethod(getSqlWithOutWhere);   
+		             conditionTypeBuilder.addMethod(generateCondition);   
+		             conditionTypeBuilder.addMethod(generateParams); 
+		             
+		             conditionTypeBuilder.addField(sql);
+		             conditionTypeBuilder.addField(paramCount);
+		             conditionTypeBuilder.addField(params);
+		             conditionTypeBuilder.addField(cache);
 	             //work 需要便利的方法
 	                TableInfo tableInfo=GlobalParams.ClassName2TableMap.get(clazz);
 	                List<ColumnInfo> columnInfos=tableInfo.getCloumnInfoList();
@@ -470,8 +495,6 @@ public class GenerateCodeUtil {
 	            			 addStatement("return simplify(\" "+firstUpper+" not between ? and ?\",new Object[]{start,end})").
 	            			 build();
 	            	 
-	            	 
-	            	 
 	            	 conditionTypeBuilder.addMethod(method1);
 	            	 conditionTypeBuilder.addMethod(method2);
 	            	 conditionTypeBuilder.addMethod(method3);
@@ -487,23 +510,7 @@ public class GenerateCodeUtil {
 	            	 conditionTypeBuilder.addMethod(method13);
 	            	 conditionTypeBuilder.addMethod(method14);
 	             }
-	             //work condtion添加方法
-	             conditionTypeBuilder.addMethod(limit);   
-	             conditionTypeBuilder.addMethod(Or);   
-	             conditionTypeBuilder.addMethod(orderBy);   
-	             conditionTypeBuilder.addMethod(includ);
-	             conditionTypeBuilder.addMethod(DESC);
-	             conditionTypeBuilder.addMethod(havaParamConstructor);   
-	             conditionTypeBuilder.addMethod(noParamConstructor);   
-	             conditionTypeBuilder.addMethod(simplify);   
-	             conditionTypeBuilder.addMethod(getSqlWithOutWhere);   
-	             conditionTypeBuilder.addMethod(generateCondition);   
-	             conditionTypeBuilder.addMethod(generateParams); 
 	             
-	             conditionTypeBuilder.addField(sql);
-	             conditionTypeBuilder.addField(paramCount);
-	             conditionTypeBuilder.addField(params);
-	             conditionTypeBuilder.addField(cache);
 	             
 	     //work 填充进类中        
 	     typeTemp.addMethods(methodSpecs);        

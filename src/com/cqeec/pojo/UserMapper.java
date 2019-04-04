@@ -145,6 +145,76 @@ public class UserMapper {
     Condition() {
     }
 
+    public Condition limit(long start, long end) {
+      this.cache.put(3," limit " +start+" , "+end);
+      return this;
+    }
+
+    public Condition Or() {
+      this.sql.append(" OR ");
+      return this;
+    }
+
+    public Condition orderBy(Object val) {
+      this.cache.put(1," order By "+val+" ");
+      return this;
+    }
+
+    /**
+     * 第一个参数是参与排序字段名称(String)，第二参数为false时为降序排序(boolean) */
+    public Condition orderBy(Object val, Object flag) {
+      this.cache.put(1," order By "+val+" ");
+      if(!(Boolean)flag) {
+        DESC();
+      }
+      return this;
+    }
+
+    public Condition includ(Condition condition) {
+      this.paramCount+=condition.paramCount;
+      this.sql.append("("+condition.sql+")");
+      this.params.addAll(condition.params);
+      return this;
+    }
+
+    @Deprecated
+    public Condition DESC() {
+      this.cache.put(2," DESC ");
+      return this;
+    }
+
+    private Condition simplify(String str, Object[] params) {
+      this.paramCount++;
+      if(params!=null) {
+        for(Object param:params)  {
+          this.params.add(param);
+        }
+      }
+      if(paramCount==1) {
+        this.sql.append(str);
+      } else {
+        this.sql.append(" and "+str);
+        return this;
+      }
+      return this;
+    }
+
+    public String getSqlWithOutWhere() {
+      return sql.toString();
+    }
+
+    public String generateCondition() {
+      if(paramCount==0) {
+        return sql.toString();
+      } else {
+        return "where "+sql.toString()+StringUtil.parseCache(cache);
+      }
+    }
+
+    public Object[] generateParams() {
+      return params.toArray();
+    }
+
     public Condition andPasswordIsNull() {
       return simplify(" Password is null ",null);
     }
@@ -415,67 +485,6 @@ public class UserMapper {
 
     public Condition andIdNotBetweenTo(Object start, Object end) {
       return simplify(" Id not between ? and ?",new Object[]{start,end});
-    }
-
-    public Condition limit(long start, long end) {
-      this.cache.put(3," limit ?,? ");
-      this.params.add(start);
-      this.params.add(end);
-      return this;
-    }
-
-    public Condition Or() {
-      this.sql.append(" OR ");
-      return this;
-    }
-
-    public Condition orderBy(Object val) {
-      this.cache.put(1," order By "+val+" ");
-      return this;
-    }
-
-    public Condition includ(Condition condition) {
-      this.paramCount+=condition.paramCount;
-      this.sql.append("("+condition.sql+")");
-      this.params.addAll(condition.params);
-      return this;
-    }
-
-    public Condition DESC() {
-      this.cache.put(2," DESC ");
-      return this;
-    }
-
-    private Condition simplify(String str, Object[] params) {
-      this.paramCount++;
-      if(params!=null) {
-        for(Object param:params)  {
-          this.params.add(param);
-        }
-      }
-      if(paramCount==1) {
-        this.sql.append(str);
-      } else {
-        this.sql.append(" and "+str);
-        return this;
-      }
-      return this;
-    }
-
-    public String getSqlWithOutWhere() {
-      return sql.toString();
-    }
-
-    public String generateCondition() {
-      if(paramCount==0) {
-        return sql.toString();
-      } else {
-        return "where "+sql.toString()+StringUtil.parseCache(cache);
-      }
-    }
-
-    public Object[] generateParams() {
-      return params.toArray();
     }
   }
 }

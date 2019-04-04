@@ -2,27 +2,14 @@ package com.cqeec.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
-import javax.lang.model.element.Modifier;
 
-import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
-import com.cqeec.core.MySqlTypeConvertor;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.MethodSpec.Builder;
-import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeVariableName;
 
 
 
@@ -106,7 +93,7 @@ public class ClassUtil {
 	public static List<Class> getClassListByPackage(String path) {
 		// TODO Auto-generated method stub
 		List<Class> list=new ArrayList<>();
-		Properties prop=FileParseUtil.parsePropertyFile("config.properties");
+		Properties prop=GlobalParams.properties;
 		File directory=new File(path);
 		File[] files=directory.listFiles(new FilenameFilter() {
 			@Override

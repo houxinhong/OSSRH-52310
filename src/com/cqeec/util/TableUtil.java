@@ -3,7 +3,6 @@ package com.cqeec.util;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +48,7 @@ public class TableUtil {
 				list.add(ti);
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 			return null;
 		}
 		return list;
@@ -98,7 +98,7 @@ public class TableUtil {
 	public static Map<Class ,TableInfo > getTableInfoMap() {
      try {
 		Map<Class, TableInfo> map=new HashMap<>();
-		List<TableInfo> list=GlobalParams.tableInfos;
+		List<TableInfo> list=getTables();
 		for(TableInfo tableInfo:list) {
 			String className=ClassUtil.getQuilifiedName(tableInfo.getTname());
 				map.put(Class.forName(className),tableInfo);

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
@@ -105,7 +104,9 @@ public class SqlUtil {
 	
 	
 	public static void modify(String sql,Object... params) {
-		System.out.println(sql);
+		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+			System.out.println(sql);
+		}
 		try {
 			Connection con=DBUtil.getConn();
 			PreparedStatement ps=con.prepareStatement(sql);
@@ -121,7 +122,9 @@ public class SqlUtil {
 	}
 
 	public static void save(String sql, Object obj) {
-		System.out.println(sql);
+		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+			System.out.println(sql);
+		}
 		 Field[] fields=obj.getClass().getDeclaredFields(); 
 	        Object[] params=new Object[fields.length];
 	        Method[] methods=obj.getClass().getDeclaredMethods();
@@ -142,12 +145,16 @@ public class SqlUtil {
 	}
 
 	public static void delete(String sql, long id) {
-		System.out.println(sql);
+		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+			System.out.println(sql);
+		}
            modify(sql, id);		
 	}
 
 	public static List<Object> select(String sql,Class clazz,Object... params) {
-		System.out.println(sql);
+		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+			System.out.println(sql);
+		}
 		try {
 			List<Object> list=new ArrayList<>();
 			Connection con=DBUtil.getConn();
@@ -175,6 +182,9 @@ public class SqlUtil {
 	private static Object mysqlData2Java(ResultSet rs,Class clazz) {
 		Field[] fields=clazz.getDeclaredFields();
 		Method[] methods=clazz.getDeclaredMethods();
+		if(GlobalParams.tableInfosMap==null) {
+			GlobalParams.tableInfosMap=TableUtil.getTableInfoMap();
+		}
 		TableInfo tableInfo=GlobalParams.tableInfosMap.get(clazz);
 		Map<String, ColumnInfo> columns=tableInfo.getColumns();
 		Object obj=null;

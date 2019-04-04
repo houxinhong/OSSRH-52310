@@ -8,7 +8,6 @@ public class FileParseUtil {
 
 	public static Properties parsePropertyFile(String path){
 		Properties properties=new Properties();
-        
 		InputStream is=FileParseUtil.class.getClassLoader().getResourceAsStream(path);
 		try {
 			properties.load(is);

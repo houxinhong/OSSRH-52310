@@ -19,14 +19,8 @@ public class DBUtil {
 
 	private static Configuration conf;
 	//加载配置文件
-	static {  //静态代码块
-		Properties pros = new Properties();
-		try {
-			pros.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+	private static void  loadProperties(){  //静态代码块
+		Properties pros = GlobalParams.properties;
 		conf = new Configuration();
 		conf.setDriver(pros.getProperty("driver"));
 		conf.setTargetPackage(pros.getProperty("targetPackage"));
@@ -41,6 +35,7 @@ public class DBUtil {
 	 * @return
 	 */
 	public static Connection getConn(){
+		   if(conf==null)loadProperties();
 		try {
 			Class.forName(conf.getDriver());
 			return DriverManager.getConnection(conf.getUrl(),
@@ -112,6 +107,7 @@ public class DBUtil {
 	 * @return
 	 */
 	public static Configuration getConf(){
+		if(conf==null)loadProperties();
 		return conf;
 	}
 
