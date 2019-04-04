@@ -62,7 +62,7 @@ public class RoleMapper {
 			 delete(role.getId());
 		 }
 	}
-	
+	//work 输出生成的sql语句
 	public List<Role> selectByCondition(Condition condition) {
 		String sql=SqlUtil.getSelectSql(Role.class, condition!=null?condition.generateCondition():null);
 		List<Role> roles=new ArrayList<>();
@@ -76,20 +76,31 @@ public class RoleMapper {
 	
 	//以sql语句进行增删该查--但不推荐使用
 	@Deprecated
-    public void insertBySql(String sql) {
-		
+    public void insertBySql(String sql,Role role) {
+		 SqlUtil.save(sql, role);
 	}
 	@Deprecated
-	public void deleteBySql(String sql) {
-		
+	public void deleteBySql(String sql_,Object[] params) {
+		String[] arrStr=sql_.split("where");
+		String sql=SqlUtil.getSelectSql(Role.class, null);
+		sql+=" where "+arrStr[1];
+		List<Object> list=SqlUtil.select(sql,Role.class, params);
+		for(Object object:list) {
+			SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where id = ?", ((Role)object).getId());
+		}
 	}
 	@Deprecated
-	public void updateBySql(String sql) {
-		
+	public void updateBySql(String sql,Object[] params) {
+		SqlUtil.modify(sql, params);
 	}
 	@Deprecated
-	public List<Role> selectBySql(String sql) {
-		return null;
+	public List<Role> selectBySql(String sql,Object[] params) {
+		List<Role> list=new ArrayList<>();
+		List<Object> temps=SqlUtil.select(sql, Role.class, params);
+		for(Object temp:temps) {
+			list.add((Role)temp);
+		}
+		return list;
 	}
 	
 	public Condition createCondtion() {
@@ -114,7 +125,7 @@ public class RoleMapper {
         /**
          * 简化一些重复的操作
          */
-		private  Condition simplify(String str,Object...params) {
+		private  Condition simplify(String str,Object[]params) {
 			this.paramCount++;
 			if(params!=null) {
 				for(Object param:params) {
@@ -142,7 +153,7 @@ public class RoleMapper {
          */
 		public String generateCondition() {
 			if(paramCount==0) {
-				return ""+sql.toString();
+				return sql.toString();
 			}else {
 				return "where "+sql.toString();
 			}
@@ -191,43 +202,43 @@ public class RoleMapper {
 		}
 		//----------------------------------------------------------------------------------
 		public Condition andIdIsNull() {
-			return simplify( " id is null ");
+			return simplify(" id is null ",null);
         }
 
         public Condition andIdIsNotNull() {
-        	return simplify(" id is not null ");
+        	return simplify(" id is not null ",null);
         }
 		
 		public Condition andIdEqualTo(Object val) {
-			return simplify(" id = ? ",val);
+			return simplify(" id = ? ",new Object[]{val}) ;
 		}
 		
 		public Condition andIdNotEqualTo(Object val) {
-			return simplify(" not id = ? ",val);
+			return simplify("  id != ? ",new Object[]{val});
 		}
 		
 		public Condition andIdGreaterThan(Object val) {
-			return simplify(" id > ? ", val);
+			return simplify(" id > ? ", new Object[]{val});
 		}
 		
 		public Condition andIdGreaterThanOrEqualTo(Object val) {
-			return simplify(" id >= ? ", val);
+			return simplify(" id >= ? ", new Object[]{val});
 		}
 		
 		public Condition andIdLessThan(Object val) {
-			return simplify(" id < ? ", val);
+			return simplify(" id < ? ", new Object[]{val});
 		}
 		
 		public Condition andIdLessThanOrEqualTo(Object val) {
-            return simplify(" id <= ? ", val);			
+            return simplify(" id <= ? ", new Object[]{val});			
 		}
 
 		public Condition andIdLike(Object val) {
-			return simplify(" id like ? ", val);
+			return simplify(" id like ? ", new Object[]{val});
 		}
 		
 		public Condition andIdNotLike(Object val) {
-			return simplify(" id not like ? ", val);
+			return simplify(" id not like ? ", new Object[]{val});
 		}
 		
 		public Condition andIdIn(List<Object> list ) {
@@ -237,7 +248,7 @@ public class RoleMapper {
 				sb.append("?,");
 			}
 			StringUtil.clearEndChar(sb);
-			return simplify(" id in ("+sb.toString()+")");
+			return simplify(" id in ("+sb.toString()+")",null);
 		}
 		
 		public Condition andIdNotIn(List<Object> list) {
@@ -247,15 +258,15 @@ public class RoleMapper {
 				sb.append("?,");
 			}
 			StringUtil.clearEndChar(sb);
-			return simplify(" id not in ("+sb.toString()+")");
+			return simplify(" id not in ("+sb.toString()+")",null);
 		}
 		
 		public Condition andIdBetweenTo(Object start,Object end){
-			return simplify(" id between ? and ?",start,end);
+			return simplify(" id between ? and ?",new Object[]{start,end});
 		}
 		
 		public Condition andIdNotBetweenTo(Object start,Object end){
-			return simplify("id not between ? and ?", start,end);
+			return simplify("id not between ? and ?",new Object[]{start,end});
 		}
 		//-------------------------------------------
 

@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.junit.Test;
 
 import com.cqeec.pojo.Role;
+import com.cqeec.pojo.RoleMapper.Condition;
 import com.cqeec.util.ClassUtil;
 import com.cqeec.util.FileParseUtil;
 import com.cqeec.util.StringUtil;

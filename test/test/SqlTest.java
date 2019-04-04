@@ -72,6 +72,24 @@ public class SqlTest {
 		}
 	}
 	
+	@Test
+	public void test06() {
+		/*RoleMapper mapper=new RoleMapper();
+		mapper.insertBySql("insert role values(?,?,?)", new Role("123456",Long.valueOf(20),"123456"));
+		List<Role> roles=mapper.selectByCondition(null);
+		for(Role role:roles) {
+			System.out.println(role);
+		}*/
+		RoleMapper mapper=new RoleMapper();
+		
+		
+		List<Role> roles=mapper.selectBySql("select * from role where id=2",null);
+		for(Role role:roles) {
+			System.out.println(role);
+		}
+		
+	}
+	
 	
 	
 	
