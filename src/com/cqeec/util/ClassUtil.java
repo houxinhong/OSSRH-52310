@@ -9,6 +9,7 @@ import java.util.Properties;
 
 
 import com.cqeec.bean.TableInfo;
+import com.cqeec.core.MySqlTypeConvertor;
 import com.squareup.javapoet.ClassName;
 
 
@@ -127,5 +128,34 @@ public class ClassUtil {
 			GlobalParams.ClassName2TableMap.put(className,tableInfo);
 		}
 		return list2;
+	}
+	public static Class getTypeByFieldNameAndClassName(String string, ClassName clazz) {
+		String columnType=GlobalParams.ClassName2TableMap.get(clazz).getColumns().get(string).getDataType();
+		return MySqlTypeConvertor.databaseType2JavaType(columnType);
+	}
+	
+	
+	public static Class getArrayClassByClass(Class clazz) {
+		//-------------------
+		if(clazz.equals(String.class)) {
+			return String[].class;
+		}
+		if(clazz.equals(Integer.class)) {
+			return Integer[].class;
+			
+		}
+		if(clazz.equals(Boolean.class)) {
+			return Boolean[].class;
+			
+		}
+		if(clazz.equals(Long.class)) {
+			return Long[].class;
+			
+		}
+		if(clazz.equals(Double.class)) {
+			return Double[].class;
+			
+		}
+		return null;
 	}
 }

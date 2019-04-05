@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
@@ -15,12 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 public class PermissionMapper {
+  public static void enabletransaction() {
+    DBUtil.enableTransaction();
+  }
+
+  public static void commit() {
+    DBUtil.commitTransaction();
+  }
+
   public void insert(Permission permission) {
     String sql=SqlUtil.getInsertSql(permission.getClass());
     SqlUtil.save(sql,permission);
   }
 
-  public void delete(long id) {
+  public void delete(Long id) {
     String sql=SqlUtil.getDeleteSql(Permission.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
@@ -30,7 +39,7 @@ public class PermissionMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(permission));
   }
 
-  public Permission select(long id) {
+  public Permission select(Long id) {
     String sql=SqlUtil.getSelectSql(Permission.class, "where id=?");
     return SqlUtil.select(sql,Permission.class,id)!=null?(Permission)SqlUtil.select(sql,Permission.class,id).get(0):null;
   }
@@ -41,8 +50,8 @@ public class PermissionMapper {
     }
   }
 
-  public void batchDelete(long[] ids) {
-    for(long id:ids) {
+  public void batchDelete(Long[] ids) {
+    for(Long id:ids) {
       delete(id);
     }
   }
@@ -59,9 +68,9 @@ public class PermissionMapper {
     }
   }
 
-  public List<Permission> batchSelect(long[] ids) {
+  public List<Permission> batchSelect(Long[] ids) {
     List<Permission> permissions=new ArrayList<>();
-    for(long id:ids) {
+    for(Long id:ids) {
       permissions.add(select(id));
     }
     return permissions;

@@ -1,11 +1,11 @@
 package com.cqeec.pojo;
 
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
@@ -15,12 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 public class RoleMapper {
+  public static void enabletransaction() {
+    DBUtil.enableTransaction();
+  }
+
+  public static void commit() {
+    DBUtil.commitTransaction();
+  }
+
   public void insert(Role role) {
     String sql=SqlUtil.getInsertSql(role.getClass());
     SqlUtil.save(sql,role);
   }
 
-  public void delete(long id) {
+  public void delete(Integer id) {
     String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
@@ -30,7 +38,7 @@ public class RoleMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
   }
 
-  public Role select(long id) {
+  public Role select(Integer id) {
     String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
     return SqlUtil.select(sql,Role.class,id)!=null?(Role)SqlUtil.select(sql,Role.class,id).get(0):null;
   }
@@ -41,14 +49,14 @@ public class RoleMapper {
     }
   }
 
-  public void batchDelete(long[] ids) {
-    for(long id:ids) {
+  public void batchDelete(Integer[] ids) {
+    for(Integer id:ids) {
       delete(id);
     }
   }
 
-  public void batchDelete(List<Long> ids) {
-    for(Long id:ids) {
+  public void batchDelete(List<Integer> ids) {
+    for(Integer id:ids) {
       delete(id);
     }
   }
@@ -59,17 +67,17 @@ public class RoleMapper {
     }
   }
 
-  public List<Role> batchSelect(long[] ids) {
+  public List<Role> batchSelect(Integer[] ids) {
     List<Role> roles=new ArrayList<>();
-    for(long id:ids) {
+    for(Integer id:ids) {
       roles.add(select(id));
     }
     return roles;
   }
 
-  public List<Role> batchSelect(List<Long> ids) {
+  public List<Role> batchSelect(List<Integer> ids) {
     List<Role> roles=new ArrayList<>();
-    for(Long id:ids) {
+    for(Integer id:ids) {
       roles.add(select(id));
     }
     return roles;

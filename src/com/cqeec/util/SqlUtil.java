@@ -121,19 +121,19 @@ public class SqlUtil {
 		}
 	}
 
-	public static void save(String sql, Object obj) {
+	public static void save(String sql, Object pojo) {
 		if(GlobalParams.properties.get("isShowSql").equals("true")) {
 			System.out.println(sql);
 		}
-		 Field[] fields=obj.getClass().getDeclaredFields(); 
+		 Field[] fields=pojo.getClass().getDeclaredFields(); 
 	        Object[] params=new Object[fields.length];
-	        Method[] methods=obj.getClass().getDeclaredMethods();
+	        Method[] methods=pojo.getClass().getDeclaredMethods();
 	        int index=0;
 	        for(Field field:fields) {
 	        	for(Method method:methods) {
 	        		if(method.getName().equals("get"+StringUtil.firstLetterUpper(field.getName()))) {
 	        			try {
-							params[index]=method.invoke(obj);
+							params[index]=method.invoke(pojo);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -144,7 +144,7 @@ public class SqlUtil {
 	        modify(sql, params);
 	}
 
-	public static void delete(String sql, long id) {
+	public static void delete(String sql, Object id) {
 		if(GlobalParams.properties.get("isShowSql").equals("true")) {
 			System.out.println(sql);
 		}

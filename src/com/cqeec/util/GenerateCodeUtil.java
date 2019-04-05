@@ -35,6 +35,9 @@ public class GenerateCodeUtil {
 		  
 		 //生成相应java文件
 		  for(ClassName clazz:list) {
+			  //获取当前便利ClassName对应的实体类的id类型
+			  Class id_class=ClassUtil.getTypeByFieldNameAndClassName("id",clazz);
+			  
 			  //成员方法集合
 			  List<MethodSpec> methodSpecs=new ArrayList<>();
 			  
@@ -43,6 +46,22 @@ public class GenerateCodeUtil {
 			  //
 			  com.squareup.javapoet.TypeSpec.Builder typeTemp=TypeSpec.classBuilder(className+"Mapper").
 					  addModifiers(Modifier.PUBLIC);
+			  
+			//添加开启事务与提交事务的静态方法  
+			  MethodSpec enabletransaction=MethodSpec.methodBuilder("enabletransaction").
+					  addModifiers(Modifier.PUBLIC,Modifier.STATIC).
+					  returns(void.class).
+					  addStatement("$T.enableTransaction()",DBUtil.class).
+					  build();
+			  methodSpecs.add(enabletransaction);
+			  
+			  MethodSpec commit=MethodSpec.methodBuilder("commit").
+					  addModifiers(Modifier.PUBLIC,Modifier.STATIC).
+					  returns(void.class).
+					  addStatement("$T.commitTransaction()",DBUtil.class).
+					  build();
+			  methodSpecs.add(commit);
+			  
 			//work 基本的增删改方法
 	          MethodSpec insert=MethodSpec.methodBuilder("insert").
 	        		  addModifiers(Modifier.PUBLIC).
@@ -55,7 +74,7 @@ public class GenerateCodeUtil {
 	          MethodSpec delete=MethodSpec.methodBuilder("delete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(long.class,"id").
+	        		  addParameter(id_class,"id").
 	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where id=?\"",SqlUtil.class,className).
 	        		  addStatement("$T.delete(sql,id)",SqlUtil.class).
 	        		  build();
@@ -71,7 +90,7 @@ public class GenerateCodeUtil {
 	          MethodSpec select=MethodSpec.methodBuilder("select").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(clazz).
-	        		  addParameter(long.class,"id").
+	        		  addParameter(id_class,"id").
 	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where id=?\")",SqlUtil.class,className).
 	        		  addStatement("return SqlUtil.select(sql,$L.class,id)!=null?($L)SqlUtil.select(sql,$L.class,id).get(0):null",className,className,className).
 	        		  build();
@@ -94,20 +113,20 @@ public class GenerateCodeUtil {
 	          MethodSpec batchDelete=MethodSpec.methodBuilder("batchDelete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(long[].class, "ids").
-	        		  beginControlFlow("for($T id:ids)", long.class).
+	        		  addParameter(ClassUtil.getArrayClassByClass(id_class), "ids").
+	        		  beginControlFlow("for($T id:ids)", id_class).
 	        		  addStatement("delete(id)").
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(batchDelete);
 	          
-	          ClassName long_=ClassName.get(Long.class);
-	          TypeName list_long=ParameterizedTypeName.get(list_, long_);
+	          ClassName id_ClassName=ClassName.get(id_class);
+	          TypeName list_idType=ParameterizedTypeName.get(list_,id_ClassName);
 	          MethodSpec batchDelete2=MethodSpec.methodBuilder("batchDelete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(list_long, "ids").
-	        		  beginControlFlow("for($T id:ids)", Long.class).
+	        		  addParameter(list_idType, "ids").
+	        		  beginControlFlow("for($T id:ids)", id_class).
 	        		  addStatement("delete(id)").
 	        		  endControlFlow().
 	        		  build();
@@ -126,9 +145,9 @@ public class GenerateCodeUtil {
 	          MethodSpec batchSelect=MethodSpec.methodBuilder("batchSelect").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(TypeNameListChangeObj).
-	        		  addParameter(long[].class, "ids").
+	        		  addParameter(ClassUtil.getArrayClassByClass(id_class), "ids").
 	        		  addStatement("$T $L=new $T<>()",TypeNameListChangeObj,firstLowerClassName+"s",ArrayList.class).
-	        		  beginControlFlow("for(long id:ids)").
+	        		  beginControlFlow("for($T id:ids)",id_class).
 	        		  addStatement("$L.add(select(id))",firstLowerClassName+"s").
 	        		  endControlFlow().
 	        		  addStatement("return $L",firstLowerClassName+"s").
@@ -138,9 +157,9 @@ public class GenerateCodeUtil {
 	          MethodSpec batchSelect2=MethodSpec.methodBuilder("batchSelect").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(TypeNameListChangeObj).
-	        		  addParameter(list_long, "ids").
+	        		  addParameter(list_idType, "ids").
 	        		  addStatement("$T $L=new $T<>()",TypeNameListChangeObj,firstLowerClassName+"s",ArrayList.class).
-	        		  beginControlFlow("for(Long id:ids)").
+	        		  beginControlFlow("for($T id:ids)",id_class).
 	        		  addStatement("$L.add(select(id))",firstLowerClassName+"s").
 	        		  endControlFlow().
 	        		  addStatement("return $L",firstLowerClassName+"s").

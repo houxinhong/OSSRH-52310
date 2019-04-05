@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
@@ -15,12 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 public class RolePermissionMapper {
+  public static void enabletransaction() {
+    DBUtil.enableTransaction();
+  }
+
+  public static void commit() {
+    DBUtil.commitTransaction();
+  }
+
   public void insert(RolePermission rolePermission) {
     String sql=SqlUtil.getInsertSql(rolePermission.getClass());
     SqlUtil.save(sql,rolePermission);
   }
 
-  public void delete(long id) {
+  public void delete(Long id) {
     String sql=SqlUtil.getDeleteSql(RolePermission.class)+"where id=?";
     SqlUtil.delete(sql,id);
   }
@@ -30,7 +39,7 @@ public class RolePermissionMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(rolePermission));
   }
 
-  public RolePermission select(long id) {
+  public RolePermission select(Long id) {
     String sql=SqlUtil.getSelectSql(RolePermission.class, "where id=?");
     return SqlUtil.select(sql,RolePermission.class,id)!=null?(RolePermission)SqlUtil.select(sql,RolePermission.class,id).get(0):null;
   }
@@ -41,8 +50,8 @@ public class RolePermissionMapper {
     }
   }
 
-  public void batchDelete(long[] ids) {
-    for(long id:ids) {
+  public void batchDelete(Long[] ids) {
+    for(Long id:ids) {
       delete(id);
     }
   }
@@ -59,9 +68,9 @@ public class RolePermissionMapper {
     }
   }
 
-  public List<RolePermission> batchSelect(long[] ids) {
+  public List<RolePermission> batchSelect(Long[] ids) {
     List<RolePermission> rolePermissions=new ArrayList<>();
-    for(long id:ids) {
+    for(Long id:ids) {
       rolePermissions.add(select(id));
     }
     return rolePermissions;

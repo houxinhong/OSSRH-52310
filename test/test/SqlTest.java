@@ -82,11 +82,10 @@ public class SqlTest {
 	
 	@Test
 	public void test06() {
-		DBUtil.enableTransaction();
+		RoleMapper.enabletransaction();
 		RoleMapper roleMapper=new RoleMapper();
-		roleMapper.insert(new Role("12", Long.valueOf(31), "6666"));
-		DBUtil.commitTransaction();
-		
+		roleMapper.delete(2);
+        RoleMapper.commit();		
 		for(Role role:roleMapper.selectByCondition(null)) {
 			System.out.println(role);
 		}
@@ -101,7 +100,6 @@ public class SqlTest {
 		System.out.println(connection.getAutoCommit());
 		Map<String, String> a=new HashMap<>();
 		System.out.println(a.remove("1"));
-		
 		
 	}
 	
