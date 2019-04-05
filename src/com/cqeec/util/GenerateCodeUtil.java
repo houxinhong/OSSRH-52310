@@ -24,6 +24,12 @@ import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
 
 public class GenerateCodeUtil {
+	public static void main(String[] args) {
+		generateJavaFile("config.properties");
+		generateMapper("config.properties");
+	}
+	
+	
 	/**
 	 * 生成映射器
 	 */
@@ -32,6 +38,11 @@ public class GenerateCodeUtil {
 		  //为了解耦----这里这样是改变了---通过拼接字符串得到相应的ClassName对象
 		  Properties prop=GlobalParams.properties;
 		  List<ClassName> list=ClassUtil.getClassNameList(prop);
+		  //如果没有的话则生存对应的包
+		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
+		  if(!directory.exists()) {
+			  directory.mkdirs();
+		  }
 		  
 		 //生成相应java文件
 		  for(ClassName clazz:list) {
@@ -551,6 +562,12 @@ public class GenerateCodeUtil {
 	 * 生成java文件
 	 */
 	public static void generateJavaFile(String configPath){
+		  Properties prop=GlobalParams.properties;
+		//如果没有的话则生存对应的包
+		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
+		  if(!directory.exists()) {
+			  directory.mkdirs();
+		  }
 		//获取所有表信息
 		try {
 			List<TableInfo> list=TableUtil.getTables();
