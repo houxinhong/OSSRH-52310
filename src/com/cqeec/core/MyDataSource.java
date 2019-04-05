@@ -10,6 +10,12 @@ import com.cqeec.util.GlobalParams;
 public class MyDataSource {
 	private LinkedList<Connection> dataSources=new LinkedList<Connection>();
 	public MyDataSource() {
+		try {
+			Class.forName(GlobalParams.properties.getProperty("driver"));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		   init();
 		 } 
 	public void init() {
