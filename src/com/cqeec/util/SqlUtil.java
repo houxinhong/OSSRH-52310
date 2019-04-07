@@ -12,6 +12,7 @@ import java.util.Map;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.squareup.javapoet.ClassName;
 
 
 public class SqlUtil {
@@ -73,14 +74,14 @@ public class SqlUtil {
 		Field[] fields=clazz.getDeclaredFields();
 		sb.append("set ");
         for(Field field:fields) {
-        	if(!field.getName().equals("id")) {
+        	if(!field.getName().equals(ClassUtil.getPrimaryKeyByClassName(ClassName.get(clazz)))) {
             	sb.append(field.getName());
             	sb.append("=");
             	sb.append("?,");
         	}
         }
         sb.replace(sb.lastIndexOf("?,"),sb.length(),"? ");
-        sb.append("where id=?");
+   //     sb.append("where id=?");
 		return sb.toString();
 	}
 	/**
@@ -122,16 +123,14 @@ public class SqlUtil {
 	}
 
 	public static void save(String sql, Object pojo) {
-		if(GlobalParams.properties.get("isShowSql").equals("true")) {
-			System.out.println(sql);
-		}
 		 Field[] fields=pojo.getClass().getDeclaredFields(); 
 	        Object[] params=new Object[fields.length];
 	        Method[] methods=pojo.getClass().getDeclaredMethods();
 	        int index=0;
 	        for(Field field:fields) {
+	        	String property2MethodName=ClassUtil.getClassSimpleName(StringUtil.firstLetterUpper(field.getName()));
 	        	for(Method method:methods) {
-	        		if(method.getName().equals("get"+StringUtil.firstLetterUpper(field.getName()))) {
+	        		if(method.getName().equals("get"+property2MethodName)) {
 	        			try {
 							params[index]=method.invoke(pojo);
 						} catch (Exception e) {
@@ -145,9 +144,6 @@ public class SqlUtil {
 	}
 
 	public static void delete(String sql, Object id) {
-		if(GlobalParams.properties.get("isShowSql").equals("true")) {
-			System.out.println(sql);
-		}
            modify(sql, id);		
 	}
 
@@ -193,24 +189,27 @@ public class SqlUtil {
 		for(Field field:fields) {
 			String dataType=columns.get(field.getName()).getDataType();
 			Class  javaType=MySqlTypeConvertor.databaseType2JavaType(dataType);
+			//属性对应的方法名称
+			String property2MethodName=ClassUtil.getClassSimpleName(StringUtil.firstLetterUpper(field.getName()));
 			
 			for(Method method:methods) {
-				if(method.getName().equals("set"+StringUtil.firstLetterUpper(field.getName()))) {
-					String name=field.getName();
+				if(method.getName().equals("set"+property2MethodName)) {
+					//数据库中字段名称
+					String columnName=field.getName();
 					if(javaType.equals(String.class)) {
-						method.invoke(obj, rs.getString(name));
+						method.invoke(obj, rs.getString(columnName));
 					}
 					if(javaType.equals(Integer.class)) {
-						method.invoke(obj, rs.getInt(name));
+						method.invoke(obj, rs.getInt(columnName));
 					}
 					if(javaType.equals(Boolean.class)) {
-						method.invoke(obj, rs.getBoolean(name));
+						method.invoke(obj, rs.getBoolean(columnName));
 					}
 					if(javaType.equals(Double.class)) {
-						method.invoke(obj, rs.getDouble(name));
+						method.invoke(obj, rs.getDouble(columnName));
 					}
 					if(javaType.equals(Long.class)) {
-						method.invoke(obj, rs.getLong(name));
+						method.invoke(obj, rs.getLong(columnName));
 					}
 				}
 			}

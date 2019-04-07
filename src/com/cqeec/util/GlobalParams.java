@@ -12,7 +12,7 @@ public class GlobalParams {
 	static{
 		properties=FileParseUtil.parsePropertyFile("config.properties");
 		tableInfos=TableUtil.getTables();
-		ClassName2TableMap=new HashMap<>();
+		ClassName2TableMap=ClassUtil.getClassName_tableInfoMap(GlobalParams.properties);
 	}
 	//全部表信息
    public static List<TableInfo> tableInfos; 

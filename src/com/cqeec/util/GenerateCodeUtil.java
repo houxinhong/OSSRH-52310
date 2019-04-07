@@ -46,8 +46,10 @@ public class GenerateCodeUtil {
 		  
 		 //生成相应java文件
 		  for(ClassName clazz:list) {
+			  //根据ClassName获取相应表的主键-----只支持单主键
+			  String primaryKey=ClassUtil.getPrimaryKeyByClassName(clazz);
 			  //获取当前便利ClassName对应的实体类的id类型
-			  Class id_class=ClassUtil.getTypeByFieldNameAndClassName("id",clazz);
+			  Class primaryKey_class=ClassUtil.getTypeByFieldNameAndClassName(primaryKey,clazz);
 			  
 			  //成员方法集合
 			  List<MethodSpec> methodSpecs=new ArrayList<>();
@@ -74,6 +76,7 @@ public class GenerateCodeUtil {
 			  methodSpecs.add(commit);
 			  
 			//work 基本的增删改方法
+			  
 	          MethodSpec insert=MethodSpec.methodBuilder("insert").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
@@ -85,25 +88,26 @@ public class GenerateCodeUtil {
 	          MethodSpec delete=MethodSpec.methodBuilder("delete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(id_class,"id").
-	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where id=?\"",SqlUtil.class,className).
-	        		  addStatement("$T.delete(sql,id)",SqlUtil.class).
+	        		  addParameter(primaryKey_class,"primaryKey").
+	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where "+primaryKey+"=?\"",SqlUtil.class,className).
+	        		  addStatement("$T.delete(sql,primaryKey)",SqlUtil.class).
 	        		  build();
 	          methodSpecs.add(delete);
 	          MethodSpec update=MethodSpec.methodBuilder("update").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
 	        		  addParameter(clazz,firstLowerClassName).
-	        		  addStatement("String sql=$T.getUpdateSql($L.getClass())",SqlUtil.class,firstLowerClassName).
+	        		  addStatement("String sql=$T.getUpdateSql($L.getClass())+\"where "+primaryKey+"=?\"",SqlUtil.class,firstLowerClassName).
 	        		  addStatement("$T.modify(sql,$T.sortByUpdate($L))",SqlUtil.class,CollectionUtil.class,firstLowerClassName).
 	        		  build();
 	          methodSpecs.add(update);
 	          MethodSpec select=MethodSpec.methodBuilder("select").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(clazz).
-	        		  addParameter(id_class,"id").
-	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where id=?\")",SqlUtil.class,className).
-	        		  addStatement("return SqlUtil.select(sql,$L.class,id)!=null?($L)SqlUtil.select(sql,$L.class,id).get(0):null",className,className,className).
+	        		  addParameter(primaryKey_class,"primaryKey").
+	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where "+primaryKey+"=?\")",SqlUtil.class,className).
+	        		  addStatement("List<Object> temp=SqlUtil.select(sql,$L.class,primaryKey)",className).
+	        		  addStatement("return temp!=null&&temp.size()!=0?($L)temp.get(0):null",className).
 	        		  build();
 	          methodSpecs.add(select);
 	          //work 批量增删改查
@@ -124,21 +128,21 @@ public class GenerateCodeUtil {
 	          MethodSpec batchDelete=MethodSpec.methodBuilder("batchDelete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(ClassUtil.getArrayClassByClass(id_class), "ids").
-	        		  beginControlFlow("for($T id:ids)", id_class).
-	        		  addStatement("delete(id)").
+	        		  addParameter(ClassUtil.getArrayClassByClass(primaryKey_class), "primaryKeys").
+	        		  beginControlFlow("for($T primaryKey:primaryKeys)", primaryKey_class).
+	        		  addStatement("delete(primaryKey)").
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(batchDelete);
 	          
-	          ClassName id_ClassName=ClassName.get(id_class);
+	          ClassName id_ClassName=ClassName.get(primaryKey_class);
 	          TypeName list_idType=ParameterizedTypeName.get(list_,id_ClassName);
 	          MethodSpec batchDelete2=MethodSpec.methodBuilder("batchDelete").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
-	        		  addParameter(list_idType, "ids").
-	        		  beginControlFlow("for($T id:ids)", id_class).
-	        		  addStatement("delete(id)").
+	        		  addParameter(list_idType, "primaryKeys").
+	        		  beginControlFlow("for($T primaryKey:primaryKeys)", primaryKey_class).
+	        		  addStatement("delete(primaryKey)").
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(batchDelete2);
@@ -156,10 +160,10 @@ public class GenerateCodeUtil {
 	          MethodSpec batchSelect=MethodSpec.methodBuilder("batchSelect").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(TypeNameListChangeObj).
-	        		  addParameter(ClassUtil.getArrayClassByClass(id_class), "ids").
+	        		  addParameter(ClassUtil.getArrayClassByClass(primaryKey_class), "primaryKeys").
 	        		  addStatement("$T $L=new $T<>()",TypeNameListChangeObj,firstLowerClassName+"s",ArrayList.class).
-	        		  beginControlFlow("for($T id:ids)",id_class).
-	        		  addStatement("$L.add(select(id))",firstLowerClassName+"s").
+	        		  beginControlFlow("for($T primaryKey:primaryKeys)",primaryKey_class).
+	        		  addStatement("$L.add(select(primaryKey))",firstLowerClassName+"s").
 	        		  endControlFlow().
 	        		  addStatement("return $L",firstLowerClassName+"s").
 	        		  build();
@@ -168,17 +172,17 @@ public class GenerateCodeUtil {
 	          MethodSpec batchSelect2=MethodSpec.methodBuilder("batchSelect").
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(TypeNameListChangeObj).
-	        		  addParameter(list_idType, "ids").
+	        		  addParameter(list_idType, "primaryKeys").
 	        		  addStatement("$T $L=new $T<>()",TypeNameListChangeObj,firstLowerClassName+"s",ArrayList.class).
-	        		  beginControlFlow("for($T id:ids)",id_class).
-	        		  addStatement("$L.add(select(id))",firstLowerClassName+"s").
+	        		  beginControlFlow("for($T primaryKey:primaryKeys)",primaryKey_class).
+	        		  addStatement("$L.add(select(primaryKey))",firstLowerClassName+"s").
 	        		  endControlFlow().
 	        		  addStatement("return $L",firstLowerClassName+"s").
 	        		  build();
 	          methodSpecs.add(batchSelect2);
 	          
 	           //work 根据条件删查
-	          ClassName condition=ClassName.get("com.cqeec.pojo."+className+"Mapper","Condition");
+	          ClassName condition=ClassName.get(prop.getProperty("targetPackage")+"."+className+"Mapper","Condition");
 	          
 	          MethodSpec deleteByCondition=MethodSpec.methodBuilder("deleteByCondition").
 	        		  addModifiers(Modifier.PUBLIC).
@@ -186,7 +190,7 @@ public class GenerateCodeUtil {
 	        		  addParameter(condition, "condition").
 	        		  addStatement("$T list=selectByCondition(condition)",TypeNameListChangeObj).
 	        		  beginControlFlow("for($T $L:list) ",clazz,firstLowerClassName).
-	        		  addStatement("delete($L.getId())",firstLowerClassName).
+	        		  addStatement("delete($L.get"+ClassUtil.getClassSimpleName(primaryKey)+"())",firstLowerClassName).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteByCondition);
@@ -228,7 +232,7 @@ public class GenerateCodeUtil {
 	        		  addStatement("sql+=\" where \"+arrStr[1]").
 	        		  addStatement("List<Object> list=SqlUtil.select(sql,$L.class, params)",className).
 	        		  beginControlFlow("for(Object object:list)").
-	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where id = ?\", (($L)object).getId())",className,className).
+	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where "+primaryKey+" = ?\", (($L)object).get"+ClassUtil.getClassSimpleName(primaryKey)+"())",className,className).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteBySql);
@@ -339,7 +343,7 @@ public class GenerateCodeUtil {
 	                		build();
 	                
 	                
-	                MethodSpec Or=MethodSpec.methodBuilder("Or").
+	                MethodSpec OR=MethodSpec.methodBuilder("OR").
 	                		addModifiers(Modifier.PUBLIC).
 	                		returns(condition).
 	                		addStatement("this.sql.append(\" OR \")").
@@ -394,7 +398,7 @@ public class GenerateCodeUtil {
 	                		build();
 	              //work condtion添加方法
 		             conditionTypeBuilder.addMethod(limit);   
-		             conditionTypeBuilder.addMethod(Or);   
+		             conditionTypeBuilder.addMethod(OR);   
 		             conditionTypeBuilder.addMethod(orderBy);   
 		             conditionTypeBuilder.addMethod(orderBy2);
 		             conditionTypeBuilder.addMethod(includ);
@@ -414,76 +418,77 @@ public class GenerateCodeUtil {
 	                TableInfo tableInfo=GlobalParams.ClassName2TableMap.get(clazz);
 	                List<ColumnInfo> columnInfos=tableInfo.getCloumnInfoList();
 	             for(ColumnInfo columnInfo:columnInfos) {
-	            	 String firstUpper=StringUtil.firstLetterUpper(columnInfo.getName());
-	            	 MethodSpec method1=MethodSpec.methodBuilder("and"+firstUpper+"IsNull").
+	            	 String columnName=columnInfo.getName();
+	            	 String methodName=ClassUtil.getClassSimpleName(columnName);
+	            	 MethodSpec method1=MethodSpec.methodBuilder("and"+methodName+"IsNull").
 		                		addModifiers(Modifier.PUBLIC).
 		                		returns(condition).
-		                		addStatement("return simplify(\" "+firstUpper+" is null \",null)").
+		                		addStatement("return simplify(\" "+columnName+" is null \",null)").
 		                		build();
 	            	 
-	            	 MethodSpec method2=MethodSpec.methodBuilder("and"+firstUpper+"NotNull").
+	            	 MethodSpec method2=MethodSpec.methodBuilder("and"+methodName+"NotNull").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 returns(condition).
 	            			 addStatement("return simplify(\" id is not null \",null)").
 	            			 build();
 	            	 
-	            	 MethodSpec method3=MethodSpec.methodBuilder("and"+firstUpper+"EqualTo").
+	            	 MethodSpec method3=MethodSpec.methodBuilder("and"+methodName+"EqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" = ? \",new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" = ? \",new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method4=MethodSpec.methodBuilder("and"+firstUpper+"NotEqualTo").
+	            	 MethodSpec method4=MethodSpec.methodBuilder("and"+methodName+"NotEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" != ? \",new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" != ? \",new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method5=MethodSpec.methodBuilder("and"+firstUpper+"GreaterThan").
+	            	 MethodSpec method5=MethodSpec.methodBuilder("and"+methodName+"GreaterThan").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" > ? \", new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" > ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method6=MethodSpec.methodBuilder("and"+firstUpper+"GreaterThanOrEqualTo").
+	            	 MethodSpec method6=MethodSpec.methodBuilder("and"+methodName+"GreaterThanOrEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" >= ? \", new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" >= ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method7=MethodSpec.methodBuilder("and"+firstUpper+"LessThan").
+	            	 MethodSpec method7=MethodSpec.methodBuilder("and"+methodName+"LessThan").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" < ? \", new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" < ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method8=MethodSpec.methodBuilder("and"+firstUpper+"LessThanOrEqualTo").
+	            	 MethodSpec method8=MethodSpec.methodBuilder("and"+methodName+"LessThanOrEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement(" return simplify(\" "+firstUpper+" <= ? \", new Object[]{val})").
+	            			 addStatement(" return simplify(\" "+columnName+" <= ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method9=MethodSpec.methodBuilder("and"+firstUpper+"Like").
+	            	 MethodSpec method9=MethodSpec.methodBuilder("and"+methodName+"Like").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" like ? \", new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" like ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method10=MethodSpec.methodBuilder("and"+firstUpper+"NotLike").
+	            	 MethodSpec method10=MethodSpec.methodBuilder("and"+methodName+"NotLike").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" not like ? \", new Object[]{val})").
+	            			 addStatement("return simplify(\" "+columnName+" not like ? \", new Object[]{val})").
 	            			 build();
 	            	 
-	            	 MethodSpec method11=MethodSpec.methodBuilder("and"+firstUpper+"In").
+	            	 MethodSpec method11=MethodSpec.methodBuilder("and"+methodName+"In").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(classNameListObject,"list").
 	            			 returns(condition).
@@ -493,10 +498,10 @@ public class GenerateCodeUtil {
 	            			     addStatement("sb.append(\"?,\")").
 	            			 endControlFlow().
 	            			 addStatement("$T.clearEndChar(sb)",StringUtil.class).
-	            			 addStatement("return simplify(\" "+firstUpper+" in (\"+sb.toString()+\")\",null)").
+	            			 addStatement("return simplify(\" "+columnName+" in (\"+sb.toString()+\")\",null)").
 	            			 build();
 	            	 
-	            	 MethodSpec method12=MethodSpec.methodBuilder("and"+firstUpper+"NotIn").
+	            	 MethodSpec method12=MethodSpec.methodBuilder("and"+methodName+"NotIn").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(classNameListObject,"list").
 	            			 returns(condition).
@@ -506,23 +511,23 @@ public class GenerateCodeUtil {
 	            			 addStatement("sb.append(\"?,\")").
 	            			 endControlFlow().
 	            			 addStatement("StringUtil.clearEndChar(sb)").
-	            			 addStatement("return simplify(\" "+firstUpper+" not in (\"+sb.toString()+\")\",null)").
+	            			 addStatement("return simplify(\" "+columnName+" not in (\"+sb.toString()+\")\",null)").
 	            			 build();
 	            	 
-	            	 MethodSpec method13=MethodSpec.methodBuilder("and"+firstUpper+"BetweenTo").
+	            	 MethodSpec method13=MethodSpec.methodBuilder("and"+methodName+"BetweenTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"start").
 	            			 addParameter(Object.class,"end").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" between ? and ?\",new Object[]{start,end})").
+	            			 addStatement("return simplify(\" "+columnName+" between ? and ?\",new Object[]{start,end})").
 	            			 build();
 	            	 
-	            	 MethodSpec method14=MethodSpec.methodBuilder("and"+firstUpper+"NotBetweenTo").
+	            	 MethodSpec method14=MethodSpec.methodBuilder("and"+methodName+"NotBetweenTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"start").
 	            			 addParameter(Object.class,"end").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+firstUpper+" not between ? and ?\",new Object[]{start,end})").
+	            			 addStatement("return simplify(\" "+columnName+" not between ? and ?\",new Object[]{start,end})").
 	            			 build();
 	            	 
 	            	 conditionTypeBuilder.addMethod(method1);
@@ -592,6 +597,7 @@ public class GenerateCodeUtil {
 					fields.add(field);
 					//方法
 					String name=StringUtil.firstLetterUpper(key);
+					name=ClassUtil.getClassSimpleName(name);
 					MethodSpec get=MethodSpec.methodBuilder("get"+name).
 							addModifiers(Modifier.PUBLIC).returns(type_).
 							addStatement("return $L",key).build();

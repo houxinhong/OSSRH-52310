@@ -20,7 +20,7 @@ public class MyDataSource {
 		 } 
 	public void init() {
 		try {
-			for (int i = 0; i < 50; i++) {
+			for (int i = 0; i < 10; i++) {
 				Connection con;
 				con = DriverManager.getConnection(GlobalParams.properties.getProperty("url"),GlobalParams.properties.getProperty("username") ,GlobalParams.properties.getProperty("password"));
 				dataSources.add(con); 

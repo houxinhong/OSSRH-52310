@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -129,6 +131,21 @@ public class ClassUtil {
 		}
 		return list2;
 	}
+	
+	public static Map<ClassName, TableInfo> getClassName_tableInfoMap(Properties prop){
+		List<TableInfo> list=TableUtil.getTables();
+		List<ClassName> list2=new ArrayList<>();
+		Map<ClassName, TableInfo> map=new HashMap<>();
+		for(TableInfo tableInfo:list) {
+		    ClassName className=ClassName.get(prop.getProperty("targetPackage"),ClassUtil.getClassSimpleName(tableInfo.getTname())); 
+			list2.add(className);
+			map.put(className,tableInfo);
+		}
+		return map;
+	}
+	
+	
+	
 	public static Class getTypeByFieldNameAndClassName(String string, ClassName clazz) {
 		String columnType=GlobalParams.ClassName2TableMap.get(clazz).getColumns().get(string).getDataType();
 		return MySqlTypeConvertor.databaseType2JavaType(columnType);
@@ -157,5 +174,8 @@ public class ClassUtil {
 			
 		}
 		return null;
+	}
+	public static String getPrimaryKeyByClassName(ClassName clazz) {
+		return GlobalParams.ClassName2TableMap.get(clazz).getOnlyPriKey().getName();
 	}
 }

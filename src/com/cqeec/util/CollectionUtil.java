@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.squareup.javapoet.ClassName;
+
 
 public class CollectionUtil {
 	
@@ -22,7 +24,7 @@ public class CollectionUtil {
 		Object[] params=new Object[fields.length];		
 		int index=0;
 		for(Field field:fields) {
-			if(!field.getName().equals("id")) {
+			if(!field.getName().equals(ClassUtil.getPrimaryKeyByClassName(ClassName.get(object.getClass())))) {
 				for(Method method:methods) {
 					if(method.getName().contains("get"+StringUtil.firstLetterUpper(field.getName()))) {
 						try {
@@ -37,7 +39,7 @@ public class CollectionUtil {
 			}
 		}
 		try {
-			params[index]=object.getClass().getDeclaredMethod("getId").invoke(object);
+			params[index]=object.getClass().getDeclaredMethod("get"+ClassUtil.getClassSimpleName(ClassUtil.getPrimaryKeyByClassName(ClassName.get(object.getClass())))).invoke(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
