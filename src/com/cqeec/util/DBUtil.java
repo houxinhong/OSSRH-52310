@@ -82,7 +82,7 @@ public class DBUtil {
 		
 		
 		//不使用连接池
-		if(GlobalParams.properties.getProperty("datasource").equals("none")) {
+		else{
 			if(userConnection.get(Thread.currentThread())!=null) {
 				return userConnection.get(Thread.currentThread());
 			}else {
@@ -93,7 +93,6 @@ public class DBUtil {
 				return connection;
 			}
 		}
-		return null;
 	}
 	
 	public static void close() {
@@ -155,7 +154,6 @@ public class DBUtil {
 	 * @param conn
 	 */
 	private static void closeByJdbc(Object... objs){
-		//ResultSet rs,Statement ps,Connection conn
 		if(objs!=null) {
 			try {
 				for(Object object:objs) {
