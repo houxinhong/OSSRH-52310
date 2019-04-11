@@ -1,0 +1,11 @@
+创建一个类PageInfo
+成员：
+1.pageIndex-->当前页
+2.totalCount-->总记录数
+3.curPageCount-->当前页记录数
+4.data-->当前页数据集合
+5.url-->全球资源定位符
+6.maxSize-->每页最多显示记录数
+
+根据条件与分页信息查询方法
+public PageInfo SelectByConditionAndPaging(PageInfo pageInfo);
