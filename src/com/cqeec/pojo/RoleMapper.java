@@ -1,5 +1,6 @@
 package com.cqeec.pojo;
 
+import com.cqeec.bean.PageInfo;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -100,6 +101,29 @@ public class RoleMapper {
     }
     return objs;
   }
+
+  public PageInfo<Role> selectByConditionWithPagination(Condition condition,
+      PageInfo<Role> pageInfo) {
+    String sql=SqlUtil.getSelectSql(Role.class, condition!=null?condition.generateCondition():null);
+    List<Role> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, Role.class,condition!=null?condition.generateParams():null);
+    for(Object object:list) {
+      objs.add((Role)object);
+    }
+     pageInfo.setPageRecordCount(objs.size());
+    	  List<Role> temp=new ArrayList<>();
+    			  int currentPage=pageInfo.getCurPage();
+    			  int maxPageSize=pageInfo.getPageSize();
+    			  int index=0;
+    			  int start=(currentPage-1)*maxPageSize;
+    			  for(Role role:objs) {
+    				 if(index>=start&&index<start+maxPageSize) {
+    					 temp.add(role);
+    				 }
+    				 index++;
+    			  }
+    	  pageInfo.setList(temp);
+    	  return pageInfo;}
 
   @Deprecated
   public void insertBySql(String sql, Role role) {

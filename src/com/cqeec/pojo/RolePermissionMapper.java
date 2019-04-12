@@ -1,5 +1,6 @@
 package com.cqeec.pojo;
 
+import com.cqeec.bean.PageInfo;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -101,6 +102,29 @@ public class RolePermissionMapper {
     }
     return objs;
   }
+
+  public PageInfo<RolePermission> selectByConditionWithPagination(Condition condition,
+      PageInfo<RolePermission> pageInfo) {
+    String sql=SqlUtil.getSelectSql(RolePermission.class, condition!=null?condition.generateCondition():null);
+    List<RolePermission> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, RolePermission.class,condition!=null?condition.generateParams():null);
+    for(Object object:list) {
+      objs.add((RolePermission)object);
+    }
+     pageInfo.setPageRecordCount(objs.size());
+    	  List<RolePermission> temp=new ArrayList<>();
+    			  int currentPage=pageInfo.getCurPage();
+    			  int maxPageSize=pageInfo.getPageSize();
+    			  int index=0;
+    			  int start=(currentPage-1)*maxPageSize;
+    			  for(RolePermission rolePermission:objs) {
+    				 if(index>=start&&index<start+maxPageSize) {
+    					 temp.add(rolePermission);
+    				 }
+    				 index++;
+    			  }
+    	  pageInfo.setList(temp);
+    	  return pageInfo;}
 
   @Deprecated
   public void insertBySql(String sql, RolePermission rolePermission) {

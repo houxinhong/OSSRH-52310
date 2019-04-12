@@ -12,8 +12,10 @@ import java.util.Set;
 import javax.lang.model.element.Modifier;
 
 import com.cqeec.bean.ColumnInfo;
+import com.cqeec.bean.PageInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.cqeec.pojo.Permission;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -208,6 +210,36 @@ public class GenerateCodeUtil {
 	        		  addStatement("return objs").
 	        		  build();
 	          methodSpecs.add(selectByCondition);
+	          
+	          ClassName pageInfo_=ClassName.get(PageInfo.class);
+	          TypeName pageInfo_clazz=ParameterizedTypeName.get(pageInfo_, clazz);
+	          MethodSpec selectByConditionWithPagination=MethodSpec.methodBuilder("selectByConditionWithPagination").
+	        		  addModifiers(Modifier.PUBLIC).
+	        		  returns(pageInfo_clazz).
+	        		  addParameter(condition, "condition").
+	        		  addParameter(pageInfo_clazz, "pageInfo").
+	        		  addStatement("String sql=SqlUtil.getSelectSql($L.class, condition!=null?condition.generateCondition():null)",className).
+	        		  addStatement("List<$L> objs=new ArrayList<>()",className).
+	        		  addStatement("List<Object> list=SqlUtil.select(sql, $L.class,condition!=null?condition.generateParams():null)",className).
+	        		  beginControlFlow("for(Object object:list)").
+	        		  addStatement("objs.add(($L)object)",className).
+	        		  endControlFlow().
+	        		  addCode(" pageInfo.setPageRecordCount(objs.size());\r\n" + 
+	        		  		"	  List<$L> temp=new ArrayList<>();\r\n" + 
+	        		  		"			  int currentPage=pageInfo.getCurPage();\r\n" + 
+	        		  		"			  int maxPageSize=pageInfo.getPageSize();\r\n" + 
+	        		  		"			  int index=0;\r\n" + 
+	        		  		"			  int start=(currentPage-1)*maxPageSize;\r\n" + 
+	        		  		"			  for($L $L:objs) {\r\n" + 
+	        		  		"				 if(index>=start&&index<start+maxPageSize) {\r\n" + 
+	        		  		"					 temp.add($L);\r\n" + 
+	        		  		"				 }\r\n" + 
+	        		  		"				 index++;\r\n" + 
+	        		  		"			  }\r\n" + 
+	        		  		"	  pageInfo.setList(temp);\r\n" + 
+	        		  		"	  return pageInfo;",className,className,StringUtil.firstLetterLower(className),StringUtil.firstLetterLower(className)).
+	        		  build();
+	          methodSpecs.add(selectByConditionWithPagination);
 	          
 	         //work 以sql语句进行增删该查--但不推荐使用
 	          MethodSpec insertBySql=MethodSpec.methodBuilder("insertBySql").

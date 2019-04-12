@@ -1,5 +1,6 @@
 package com.cqeec.pojo;
 
+import com.cqeec.bean.PageInfo;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -101,6 +102,29 @@ public class UserMapper {
     }
     return objs;
   }
+
+  public PageInfo<User> selectByConditionWithPagination(Condition condition,
+      PageInfo<User> pageInfo) {
+    String sql=SqlUtil.getSelectSql(User.class, condition!=null?condition.generateCondition():null);
+    List<User> objs=new ArrayList<>();
+    List<Object> list=SqlUtil.select(sql, User.class,condition!=null?condition.generateParams():null);
+    for(Object object:list) {
+      objs.add((User)object);
+    }
+     pageInfo.setPageRecordCount(objs.size());
+    	  List<User> temp=new ArrayList<>();
+    			  int currentPage=pageInfo.getCurPage();
+    			  int maxPageSize=pageInfo.getPageSize();
+    			  int index=0;
+    			  int start=(currentPage-1)*maxPageSize;
+    			  for(User user:objs) {
+    				 if(index>=start&&index<start+maxPageSize) {
+    					 temp.add(user);
+    				 }
+    				 index++;
+    			  }
+    	  pageInfo.setList(temp);
+    	  return pageInfo;}
 
   @Deprecated
   public void insertBySql(String sql, User user) {

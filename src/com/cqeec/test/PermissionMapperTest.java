@@ -3,9 +3,12 @@ package com.cqeec.test;
 
 import org.junit.Test;
 
+import com.cqeec.bean.PageInfo;
 import com.cqeec.pojo.Permission;
 import com.cqeec.pojo.PermissionMapper;
+import com.cqeec.pojo.RoleMapper;
 import com.cqeec.pojo.PermissionMapper.Condition;
+import com.cqeec.pojo.Role;
 import com.cqeec.util.GenerateCodeUtil;
 
 public class PermissionMapperTest {
@@ -49,5 +52,15 @@ public class PermissionMapperTest {
 		Permission permission=mapper.selectByCondition(condition).get(0);
 		System.out.println(permission);
 	}
+	
+	@Test
+	public void testSelectByConditionWithPagination() {
+		/*PageInfo<Permission> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(2, 8));
+		System.out.println(pageInfo.getList().size());*/
+		RoleMapper mapper=new RoleMapper();
+		PageInfo<Role> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(1, 8));
+		System.out.println(pageInfo.getList().size());
+	}
+	
 
 }
