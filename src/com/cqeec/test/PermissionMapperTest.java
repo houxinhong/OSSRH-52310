@@ -55,11 +55,11 @@ public class PermissionMapperTest {
 	
 	@Test
 	public void testSelectByConditionWithPagination() {
-		/*PageInfo<Permission> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(2, 8));
-		System.out.println(pageInfo.getList().size());*/
-		RoleMapper mapper=new RoleMapper();
-		PageInfo<Role> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(1, 8));
-		System.out.println(pageInfo.getList().size());
+		PageInfo<Permission> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(7, 1));
+	/*	RoleMapper mapper=new RoleMapper();
+		PageInfo<Role> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(1, 8));*/
+		System.out.println(pageInfo.getStartPageButton());
+		System.out.println(pageInfo.getEndPageButton());
 	}
 	
 
