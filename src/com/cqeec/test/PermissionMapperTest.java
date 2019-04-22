@@ -13,7 +13,6 @@ import com.cqeec.util.GenerateCodeUtil;
 
 public class PermissionMapperTest {
 	private PermissionMapper mapper=new PermissionMapper();
-	
 	@Test
 	public void generate() {
 		GenerateCodeUtil.generateJavaFile("config.properties");
