@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.bean.PageInfo;
+import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -31,17 +32,17 @@ public class UserMapper {
   }
 
   public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(User.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(User.class)+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(User user) {
-    String sql=SqlUtil.getUpdateSql(user.getClass())+"where id=?";
+    String sql=SqlUtil.getUpdateSql(user.getClass())+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(user));
   }
 
   public User select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(User.class, "where id=?");
+    String sql=SqlUtil.getSelectSql(User.class, "where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,User.class,primaryKey);
     return temp!=null&&temp.size()!=0?(User)temp.get(0):null;
   }
@@ -138,7 +139,7 @@ public class UserMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,User.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(User.class)+"where id = ?", ((User)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(User.class)+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?", ((User)object).getId());
     }
   }
 

@@ -26,7 +26,7 @@ public class PermissionMapperTest {
 
 	@Test
 	public void insert() {
-		Permission permission=new Permission("test",15L, "1111","/dddd");
+		Permission permission=new Permission("test",16L, "1111","/dddd");
 	    mapper.insert(permission);		
 	}
 
@@ -37,25 +37,25 @@ public class PermissionMapperTest {
 
 	@Test
 	public void update() {
-		Permission permission=mapper.select(12L);
-		permission.setName("111111111222222");
+		Permission permission=mapper.select(2L);
+		permission.setName("111661111222222");
 		mapper.update(permission);
 	}
 
 	@Test
 	public void select() {
-		System.out.println(mapper.select(1L));
+		System.out.println(mapper.select(3L));
 	}
 	
 	@Test
 	public void deleteByCondition() {
-		Condition condition=mapper.createCondtion().andIdEqualTo(1);
+		Condition condition=mapper.createCondtion().andIdEqualTo(2);
 		mapper.deleteByCondition(condition);
 	}
     
 	@Test
 	public void selectByCondition() {
-		Condition condition=mapper.createCondtion().andIdEqualTo(1);
+		Condition condition=mapper.createCondtion().andIdEqualTo(3);
 		Permission permission=mapper.selectByCondition(condition).get(0);
 		System.out.println(permission);
 	}

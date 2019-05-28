@@ -4,13 +4,11 @@ import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 
-import com.cqeec.annotation.Column;
-import com.cqeec.annotation.Table;
-@Table("permission")
-public class Permission {
-	@Column("name")
-  private String name;
+import com.cqeec.annotation.Id;
 
+public class Permission {
+  private String name;
+  @Id("idsss")
   private Long id;
 
   private String desc_;

@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.bean.PageInfo;
+import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -31,17 +32,17 @@ public class UserRoleMapper {
   }
 
   public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(UserRole.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(UserRole.class)+"where "+ClassUtil.getPrimaryKeyByClass(UserRole.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(UserRole userRole) {
-    String sql=SqlUtil.getUpdateSql(userRole.getClass())+"where id=?";
+    String sql=SqlUtil.getUpdateSql(userRole.getClass())+"where "+ClassUtil.getPrimaryKeyByClass(UserRole.class)+"=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(userRole));
   }
 
   public UserRole select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(UserRole.class, "where id=?");
+    String sql=SqlUtil.getSelectSql(UserRole.class, "where "+ClassUtil.getPrimaryKeyByClass(UserRole.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,UserRole.class,primaryKey);
     return temp!=null&&temp.size()!=0?(UserRole)temp.get(0):null;
   }
@@ -138,7 +139,7 @@ public class UserRoleMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,UserRole.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(UserRole.class)+"where id = ?", ((UserRole)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(UserRole.class)+"where "+ClassUtil.getPrimaryKeyByClass(UserRole.class)+"=?", ((UserRole)object).getId());
     }
   }
 

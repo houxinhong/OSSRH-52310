@@ -1,13 +1,13 @@
 package com.cqeec.pojo;
 
 import com.cqeec.bean.PageInfo;
+import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
@@ -30,18 +30,18 @@ public class RoleMapper {
     SqlUtil.save(sql,role);
   }
 
-  public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
+  public void delete(Integer primaryKey) {
+    String sql=SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(Role role) {
-    String sql=SqlUtil.getUpdateSql(role.getClass())+"where id=?";
+    String sql=SqlUtil.getUpdateSql(role.getClass())+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
   }
 
-  public Role select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
+  public Role select(Integer primaryKey) {
+    String sql=SqlUtil.getSelectSql(Role.class, "where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,Role.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Role)temp.get(0):null;
   }
@@ -52,14 +52,14 @@ public class RoleMapper {
     }
   }
 
-  public void batchDelete(Long[] primaryKeys) {
-    for(Long primaryKey:primaryKeys) {
+  public void batchDelete(Integer[] primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
 
-  public void batchDelete(List<Long> primaryKeys) {
-    for(Long primaryKey:primaryKeys) {
+  public void batchDelete(List<Integer> primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
@@ -70,17 +70,17 @@ public class RoleMapper {
     }
   }
 
-  public List<Role> batchSelect(Long[] primaryKeys) {
+  public List<Role> batchSelect(Integer[] primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Long primaryKey:primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
   }
 
-  public List<Role> batchSelect(List<Long> primaryKeys) {
+  public List<Role> batchSelect(List<Integer> primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Long primaryKey:primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
@@ -138,7 +138,7 @@ public class RoleMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,Role.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where id = ?", ((Role)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?", ((Role)object).getId());
     }
   }
 

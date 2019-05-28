@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-
+import com.cqeec.annotation.Id;
+import com.cqeec.annotation.Table;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
 import com.squareup.javapoet.ClassName;
@@ -92,7 +93,6 @@ public class ClassUtil {
 	 * @param targetPackage
 	 * @return
 	 */
-	@Deprecated
 	public static List<Class> getClassListByPackage(String path) {
 		// TODO Auto-generated method stub
 		List<Class> list=new ArrayList<>();
@@ -175,7 +175,31 @@ public class ClassUtil {
 		}
 		return null;
 	}
+	/**
+	 * 由于加入类名与表名对应的注解所以这个方法应谨慎使用
+	 * @param clazz
+	 * @return
+	 */
 	public static String getPrimaryKeyByClassName(ClassName clazz) {
 		return GlobalParams.ClassName2TableMap.get(clazz).getOnlyPriKey().getName();
+	}
+	
+	public static String getPrimaryKeyByClass(Class clazz) {
+		Method[] methods=clazz.getDeclaredMethods();
+		for(Method method:methods) {
+			Id id=method.getDeclaredAnnotation(Id.class);
+			if(id!=null) {
+				return id.value(); 
+			}
+		}
+		
+		Table table=(Table) clazz.getDeclaredAnnotation(Table.class);
+		if(table==null) {
+			return getPrimaryKeyByClassName(ClassName.get(clazz));
+		}else {
+			 String tableName=table.value();
+			 String simpleName=getClassSimpleName(tableName);
+			return getPrimaryKeyByClassName(ClassName.get(GlobalParams.properties.getProperty("targetPackage"), simpleName));
+		}
 	}
 }

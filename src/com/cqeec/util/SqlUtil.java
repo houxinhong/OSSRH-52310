@@ -76,7 +76,7 @@ public class SqlUtil {
 		Field[] fields=clazz.getDeclaredFields();
 		sb.append("set ");
         for(Field field:fields) {
-        	if(!field.getName().equals(ClassUtil.getPrimaryKeyByClassName(ClassName.get(clazz)))) {
+        	if(!field.getName().equals(ClassUtil.getPrimaryKeyByClass(clazz))) {
             	sb.append(ColumnUtil.getColumnNameByField(field));
             	sb.append("=");
             	sb.append("?,");

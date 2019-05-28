@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.bean.PageInfo;
+import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -31,17 +32,17 @@ public class PermissionMapper {
   }
 
   public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(Permission.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(Permission.class)+"where "+ClassUtil.getPrimaryKeyByClass(Permission.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(Permission permission) {
-    String sql=SqlUtil.getUpdateSql(permission.getClass())+"where id=?";
+    String sql=SqlUtil.getUpdateSql(permission.getClass())+"where "+ClassUtil.getPrimaryKeyByClass(Permission.class)+"=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(permission));
   }
 
   public Permission select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(Permission.class, "where id=?");
+    String sql=SqlUtil.getSelectSql(Permission.class, "where "+ClassUtil.getPrimaryKeyByClass(Permission.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,Permission.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Permission)temp.get(0):null;
   }
@@ -138,7 +139,7 @@ public class PermissionMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,Permission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Permission.class)+"where id = ?", ((Permission)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(Permission.class)+"where "+ClassUtil.getPrimaryKeyByClass(Permission.class)+"=?", ((Permission)object).getId());
     }
   }
 

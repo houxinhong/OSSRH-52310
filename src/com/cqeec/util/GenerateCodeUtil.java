@@ -15,7 +15,6 @@ import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
-import com.cqeec.pojo.Permission;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -49,9 +48,9 @@ public class GenerateCodeUtil {
 		 //生成相应java文件
 		  for(ClassName clazz:list) {
 			  //根据ClassName获取相应表的主键-----只支持单主键
-			  String primaryKey=ClassUtil.getPrimaryKeyByClassName(clazz);
+			  String primaryKey__=ClassUtil.getPrimaryKeyByClassName(clazz);
 			  //获取当前便利ClassName对应的实体类的id类型
-			  Class primaryKey_class=ClassUtil.getTypeByFieldNameAndClassName(primaryKey,clazz);
+			  Class primaryKey_class=ClassUtil.getTypeByFieldNameAndClassName(primaryKey__,clazz);
 			  
 			  //成员方法集合
 			  List<MethodSpec> methodSpecs=new ArrayList<>();
@@ -91,7 +90,7 @@ public class GenerateCodeUtil {
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
 	        		  addParameter(primaryKey_class,"primaryKey").
-	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where "+primaryKey+"=?\"",SqlUtil.class,className).
+	        		  addStatement("String sql=$T.getDeleteSql($L.class)+\"where \"+ClassUtil.getPrimaryKeyByClass($L.class)+\"=?\"",SqlUtil.class,className,className).
 	        		  addStatement("$T.delete(sql,primaryKey)",SqlUtil.class).
 	        		  build();
 	          methodSpecs.add(delete);
@@ -99,7 +98,7 @@ public class GenerateCodeUtil {
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(void.class).
 	        		  addParameter(clazz,firstLowerClassName).
-	        		  addStatement("String sql=$T.getUpdateSql($L.getClass())+\"where "+primaryKey+"=?\"",SqlUtil.class,firstLowerClassName).
+	        		  addStatement("String sql=$T.getUpdateSql($L.getClass())+\"where \"+ClassUtil.getPrimaryKeyByClass($L.class)+\"=?\"",SqlUtil.class,firstLowerClassName,className).
 	        		  addStatement("$T.modify(sql,$T.sortByUpdate($L))",SqlUtil.class,CollectionUtil.class,firstLowerClassName).
 	        		  build();
 	          methodSpecs.add(update);
@@ -107,7 +106,7 @@ public class GenerateCodeUtil {
 	        		  addModifiers(Modifier.PUBLIC).
 	        		  returns(clazz).
 	        		  addParameter(primaryKey_class,"primaryKey").
-	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where "+primaryKey+"=?\")",SqlUtil.class,className).
+	        		  addStatement("String sql=$T.getSelectSql($L.class, \"where \"+$T.getPrimaryKeyByClass($L.class)+\"=?\")",SqlUtil.class,className,ClassUtil.class,className).
 	        		  addStatement("List<Object> temp=SqlUtil.select(sql,$L.class,primaryKey)",className).
 	        		  addStatement("return temp!=null&&temp.size()!=0?($L)temp.get(0):null",className).
 	        		  build();
@@ -192,7 +191,7 @@ public class GenerateCodeUtil {
 	        		  addParameter(condition, "condition").
 	        		  addStatement("$T list=selectByCondition(condition)",TypeNameListChangeObj).
 	        		  beginControlFlow("for($T $L:list) ",clazz,firstLowerClassName).
-	        		  addStatement("delete($L.get"+ClassUtil.getClassSimpleName(primaryKey)+"())",firstLowerClassName).
+	        		  addStatement("delete($L.get"+ClassUtil.getClassSimpleName(primaryKey__)+"())",firstLowerClassName).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteByCondition);
@@ -264,7 +263,7 @@ public class GenerateCodeUtil {
 	        		  addStatement("sql+=\" where \"+arrStr[1]").
 	        		  addStatement("List<Object> list=SqlUtil.select(sql,$L.class, params)",className).
 	        		  beginControlFlow("for(Object object:list)").
-	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where "+primaryKey+" = ?\", (($L)object).get"+ClassUtil.getClassSimpleName(primaryKey)+"())",className,className).
+	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where \"+ClassUtil.getPrimaryKeyByClass($L.class)+\"=?\", (($L)object).get"+ClassUtil.getClassSimpleName(primaryKey__)+"())",className,className,className).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteBySql);
@@ -451,6 +450,7 @@ public class GenerateCodeUtil {
 	                List<ColumnInfo> columnInfos=tableInfo.getCloumnInfoList();
 	             for(ColumnInfo columnInfo:columnInfos) {
 	            	 String columnName=columnInfo.getName();
+	            	 columnName="ClassUtil.getPrimaryKeyByClass($L.class)";
 	            	 String methodName=ClassUtil.getClassSimpleName(columnName);
 	            	 MethodSpec method1=MethodSpec.methodBuilder("and"+methodName+"IsNull").
 		                		addModifiers(Modifier.PUBLIC).
@@ -461,7 +461,7 @@ public class GenerateCodeUtil {
 	            	 MethodSpec method2=MethodSpec.methodBuilder("and"+methodName+"NotNull").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" id is not null \",null)").
+	            			 addStatement("return simplify("+columnName+"\" is not null \",null)").
 	            			 build();
 	            	 
 	            	 MethodSpec method3=MethodSpec.methodBuilder("and"+methodName+"EqualTo").

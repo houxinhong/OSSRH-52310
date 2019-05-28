@@ -1,6 +1,7 @@
 package com.cqeec.pojo;
 
 import com.cqeec.bean.PageInfo;
+import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
@@ -31,17 +32,17 @@ public class RolePermissionMapper {
   }
 
   public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(RolePermission.class)+"where id=?";
+    String sql=SqlUtil.getDeleteSql(RolePermission.class)+"where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(RolePermission rolePermission) {
-    String sql=SqlUtil.getUpdateSql(rolePermission.getClass())+"where id=?";
+    String sql=SqlUtil.getUpdateSql(rolePermission.getClass())+"where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(rolePermission));
   }
 
   public RolePermission select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(RolePermission.class, "where id=?");
+    String sql=SqlUtil.getSelectSql(RolePermission.class, "where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,RolePermission.class,primaryKey);
     return temp!=null&&temp.size()!=0?(RolePermission)temp.get(0):null;
   }
@@ -138,7 +139,7 @@ public class RolePermissionMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,RolePermission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(RolePermission.class)+"where id = ?", ((RolePermission)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(RolePermission.class)+"where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?", ((RolePermission)object).getId());
     }
   }
 

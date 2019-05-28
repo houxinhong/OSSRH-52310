@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import com.cqeec.annotation.Column;
 import com.cqeec.annotation.Table;
@@ -58,18 +59,17 @@ public class TableUtil {
 		return list;
 	}
 	public static Map<Class ,TableInfo > getTableInfoMap() {
-     try {
-		Map<Class, TableInfo> map=new HashMap<>();
-		List<TableInfo> list=getTables();
-		for(TableInfo tableInfo:list) {
-			String className=ClassUtil.getQuilifiedName(tableInfo.getTname());
-				map.put(Class.forName(className),tableInfo);
+     Map<Class, TableInfo> map=new HashMap<>();
+	List<TableInfo> list=getTables();
+	for(TableInfo tableInfo:list) {
+		Properties properties=GlobalParams.properties;
+		List<Class> classes=ClassUtil.getClassListByPackage(properties.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(properties.getProperty("targetPackage")));
+		for(Class clazz:classes) {
+			if(TableUtil.getTableNameByClass(clazz).equals(tableInfo.getTname()))
+				map.put(clazz,tableInfo);
 		}
-		return map;
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				return null;
-			}
+	}
+	return map;
 		
 	}
 	/**
