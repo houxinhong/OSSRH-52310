@@ -17,6 +17,7 @@ import com.squareup.javapoet.ClassName;
 
 public class SqlUtil {
 	/**
+	 * 这里的的顺序是基于Class获取的filed数组的遍历顺序
 	 * 插入语句的sql
 	 * @param clazz
 	 * @return
@@ -31,7 +32,7 @@ public class SqlUtil {
 		Field[] fields=clazz.getDeclaredFields();
 		sb.append("(");
 		for(Field field:fields) {
-			sb.append(field.getName()+",");
+			sb.append(ColumnUtil.getColumnNameByField(field)+",");
 		}
 		StringUtil.clearEndChar(sb);
 		sb.append(")");
@@ -60,6 +61,7 @@ public class SqlUtil {
 	}
 
 	/**
+	 * 这里的的顺序是基于Class获取的filed数组的遍历顺序
 	 * 更新语句的sql
 	 * @param clazz
 	 * @return
@@ -75,13 +77,12 @@ public class SqlUtil {
 		sb.append("set ");
         for(Field field:fields) {
         	if(!field.getName().equals(ClassUtil.getPrimaryKeyByClassName(ClassName.get(clazz)))) {
-            	sb.append(field.getName());
+            	sb.append(ColumnUtil.getColumnNameByField(field));
             	sb.append("=");
             	sb.append("?,");
         	}
         }
         sb.replace(sb.lastIndexOf("?,"),sb.length(),"? ");
-   //     sb.append("where id=?");
 		return sb.toString();
 	}
 	/**
@@ -174,7 +175,12 @@ public class SqlUtil {
 		}
 	}
 	
-	
+	/**
+	 * 将mysql数据转换为java对象
+	 * @param rs
+	 * @param clazz
+	 * @return
+	 */
 	private static Object mysqlData2Java(ResultSet rs,Class clazz) {
 		Field[] fields=clazz.getDeclaredFields();
 		Method[] methods=clazz.getDeclaredMethods();
@@ -187,7 +193,7 @@ public class SqlUtil {
 	try {
 		obj=clazz.newInstance();
 		for(Field field:fields) {
-			String dataType=columns.get(field.getName()).getDataType();
+			String dataType=columns.get(ColumnUtil.getColumnNameByField(field)).getDataType();
 			Class  javaType=MySqlTypeConvertor.databaseType2JavaType(dataType);
 			//属性对应的方法名称
 			String property2MethodName=ClassUtil.getClassSimpleName(StringUtil.firstLetterUpper(field.getName()));
@@ -195,7 +201,7 @@ public class SqlUtil {
 			for(Method method:methods) {
 				if(method.getName().equals("set"+property2MethodName)) {
 					//数据库中字段名称
-					String columnName=field.getName();
+					String columnName=ColumnUtil.getColumnNameByField(field);
 					if(javaType.equals(String.class)) {
 						method.invoke(obj, rs.getString(columnName));
 					}

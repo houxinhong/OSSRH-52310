@@ -4,18 +4,22 @@ import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 
+import com.cqeec.annotation.Column;
+import com.cqeec.annotation.Table;
+@Table("permission")
 public class Permission {
+	@Column("name")
   private String name;
 
-  private Long id_dsd_dsss;
+  private Long id;
 
   private String desc_;
 
   private String url;
 
-  public Permission(String name, Long id_dsd_dsss, String desc_, String url) {
+  public Permission(String name, Long id, String desc_, String url) {
     this.name=name;
-    this.id_dsd_dsss=id_dsd_dsss;
+    this.id=id;
     this.desc_=desc_;
     this.url=url;
   }
@@ -31,12 +35,12 @@ public class Permission {
     this.name=name;
   }
 
-  public Long getIdDsdDsss() {
-    return id_dsd_dsss;
+  public Long getId() {
+    return id;
   }
 
-  public void setIdDsdDsss(Long id_dsd_dsss) {
-    this.id_dsd_dsss=id_dsd_dsss;
+  public void setId(Long id) {
+    this.id=id;
   }
 
   public String getDesc() {
@@ -57,6 +61,6 @@ public class Permission {
 
   @Override
   public String toString() {
-    return "["+"name"+"="+this.name+","+"id_dsd_dsss"+"="+this.id_dsd_dsss+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
+    return "["+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
   }
 }

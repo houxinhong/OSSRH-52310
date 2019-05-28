@@ -17,7 +17,11 @@ public class CollectionUtil {
 		}
 		return list;
 	}
-
+/**
+ * 这里的的顺序是基于Class获取的filed数组的遍历顺序
+ * @param object
+ * @return
+ */
 	public static Object[] sortByUpdate(Object object) {
 		Field[] fields=object.getClass().getDeclaredFields(); 
 		Method[] methods=object.getClass().getDeclaredMethods();

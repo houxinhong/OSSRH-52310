@@ -1,5 +1,7 @@
 package com.cqeec.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -8,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cqeec.annotation.Column;
+import com.cqeec.annotation.Table;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
 
@@ -53,48 +57,6 @@ public class TableUtil {
 		}
 		return list;
 	}
-    /**
-     * 根据Class对象获取表名
-     * @param clazz
-     * @return
-     */
-	public static String getTableNameByClass(Class clazz) {
-		String simpleClassName=ClassUtil.getClassSimpleName(clazz);
-		//parseTableName
-		String temp=StringUtil.firstLetterLower(simpleClassName);
-		//当类名有大写字母时才做操作
-		if(StringUtil.getFirstUpperLetterIndex(temp)!=null) {
-			Integer index=StringUtil.getFirstUpperLetterIndex(temp);
-			while(index!=null) {
-				String first=temp.substring(0,index);
-				String second=temp.substring(index);
-				second="_"+StringUtil.firstLetterLower(second);
-				temp=first+second;
-				index=StringUtil.getFirstUpperLetterIndex(temp);
-			}
-		}
-		return temp;
-	}
-	
-	/**
-	 * 将类名转换为表名
-	 * @param matename
-	 * @return
-	 */
-	public static String packingClassName(String matename) {
-		if(matename.indexOf("_")!=-1) {
-			String[] temps=matename.split("_");
-			StringBuffer sb=new StringBuffer();
-			for(String temp:temps) {
-				sb.append(StringUtil.firstLetterUpper(temp));
-			}
-			matename=sb.toString();
-		}else {
-			matename=StringUtil.firstLetterUpper(matename);
-		}
-		return matename;
-	}
-	
 	public static Map<Class ,TableInfo > getTableInfoMap() {
      try {
 		Map<Class, TableInfo> map=new HashMap<>();
@@ -110,4 +72,34 @@ public class TableUtil {
 			}
 		
 	}
+	/**
+	 * 根据Class对象获取表名
+	 * @param clazz
+	 * @return
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 */
+	public static String getTableNameByClass(Class clazz) {
+		Table table=(Table)clazz.getAnnotation(Table.class);
+		if(table==null) {
+			String simpleClassName=ClassUtil.getClassSimpleName(clazz);
+			//parseTableName
+			String temp=StringUtil.firstLetterLower(simpleClassName);
+			//当类名有大写字母时才做操作
+			if(StringUtil.getFirstUpperLetterIndex(temp)!=null) {
+				Integer index=StringUtil.getFirstUpperLetterIndex(temp);
+				while(index!=null) {
+					String first=temp.substring(0,index);
+					String second=temp.substring(index);
+					second="_"+StringUtil.firstLetterLower(second);
+					temp=first+second;
+					index=StringUtil.getFirstUpperLetterIndex(temp);
+				}
+			}
+			return temp;
+		}else {
+			return table.value();
+		}
+		
+	};
 }

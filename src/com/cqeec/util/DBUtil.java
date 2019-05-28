@@ -67,7 +67,7 @@ public class DBUtil {
 	//对外提供使用获取连接释放连接的方法
 	public static Connection getConn() {
 		//根据是否使用连接池进行对象的获取
-		if(GlobalParams.properties.getProperty("datasource").equals("mydatasource")) {
+		if("mydatasource".equals(GlobalParams.properties.getProperty("datasource"))) {
 			if(userConnection.get(Thread.currentThread())!=null) {
 				return userConnection.get(Thread.currentThread());
 			}else {

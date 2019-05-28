@@ -1,17 +1,17 @@
 package com.cqeec.pojo;
 
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 
 public class Role {
   private String name;
 
-  private Integer id;
+  private Long id;
 
   private String desc_;
 
-  public Role(String name, Integer id, String desc_) {
+  public Role(String name, Long id, String desc_) {
     this.name=name;
     this.id=id;
     this.desc_=desc_;
@@ -28,11 +28,11 @@ public class Role {
     this.name=name;
   }
 
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(Long id) {
     this.id=id;
   }
 

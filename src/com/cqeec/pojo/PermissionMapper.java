@@ -31,17 +31,17 @@ public class PermissionMapper {
   }
 
   public void delete(Long primaryKey) {
-    String sql=SqlUtil.getDeleteSql(Permission.class)+"where id_dsd_dsss=?";
+    String sql=SqlUtil.getDeleteSql(Permission.class)+"where id=?";
     SqlUtil.delete(sql,primaryKey);
   }
 
   public void update(Permission permission) {
-    String sql=SqlUtil.getUpdateSql(permission.getClass())+"where id_dsd_dsss=?";
+    String sql=SqlUtil.getUpdateSql(permission.getClass())+"where id=?";
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(permission));
   }
 
   public Permission select(Long primaryKey) {
-    String sql=SqlUtil.getSelectSql(Permission.class, "where id_dsd_dsss=?");
+    String sql=SqlUtil.getSelectSql(Permission.class, "where id=?");
     List<Object> temp=SqlUtil.select(sql,Permission.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Permission)temp.get(0):null;
   }
@@ -89,7 +89,7 @@ public class PermissionMapper {
   public void deleteByCondition(Condition condition) {
     List<Permission> list=selectByCondition(condition);
     for(Permission permission:list)  {
-      delete(permission.getIdDsdDsss());
+      delete(permission.getId());
     }
   }
 
@@ -138,7 +138,7 @@ public class PermissionMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,Permission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Permission.class)+"where id_dsd_dsss = ?", ((Permission)object).getIdDsdDsss());
+      SqlUtil.delete(SqlUtil.getDeleteSql(Permission.class)+"where id = ?", ((Permission)object).getId());
     }
   }
 
@@ -317,72 +317,72 @@ public class PermissionMapper {
       return simplify(" name not between ? and ?",new Object[]{start,end});
     }
 
-    public Condition andIdDsdDsssIsNull() {
-      return simplify(" id_dsd_dsss is null ",null);
+    public Condition andIdIsNull() {
+      return simplify(" id is null ",null);
     }
 
-    public Condition andIdDsdDsssNotNull() {
+    public Condition andIdNotNull() {
       return simplify(" id is not null ",null);
     }
 
-    public Condition andIdDsdDsssEqualTo(Object val) {
-      return simplify(" id_dsd_dsss = ? ",new Object[]{val});
+    public Condition andIdEqualTo(Object val) {
+      return simplify(" id = ? ",new Object[]{val});
     }
 
-    public Condition andIdDsdDsssNotEqualTo(Object val) {
-      return simplify(" id_dsd_dsss != ? ",new Object[]{val});
+    public Condition andIdNotEqualTo(Object val) {
+      return simplify(" id != ? ",new Object[]{val});
     }
 
-    public Condition andIdDsdDsssGreaterThan(Object val) {
-      return simplify(" id_dsd_dsss > ? ", new Object[]{val});
+    public Condition andIdGreaterThan(Object val) {
+      return simplify(" id > ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssGreaterThanOrEqualTo(Object val) {
-      return simplify(" id_dsd_dsss >= ? ", new Object[]{val});
+    public Condition andIdGreaterThanOrEqualTo(Object val) {
+      return simplify(" id >= ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssLessThan(Object val) {
-      return simplify(" id_dsd_dsss < ? ", new Object[]{val});
+    public Condition andIdLessThan(Object val) {
+      return simplify(" id < ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssLessThanOrEqualTo(Object val) {
-       return simplify(" id_dsd_dsss <= ? ", new Object[]{val});
+    public Condition andIdLessThanOrEqualTo(Object val) {
+       return simplify(" id <= ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssLike(Object val) {
-      return simplify(" id_dsd_dsss like ? ", new Object[]{val});
+    public Condition andIdLike(Object val) {
+      return simplify(" id like ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssNotLike(Object val) {
-      return simplify(" id_dsd_dsss not like ? ", new Object[]{val});
+    public Condition andIdNotLike(Object val) {
+      return simplify(" id not like ? ", new Object[]{val});
     }
 
-    public Condition andIdDsdDsssIn(List<Object> list) {
+    public Condition andIdIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id_dsd_dsss in ("+sb.toString()+")",null);
+      return simplify(" id in ("+sb.toString()+")",null);
     }
 
-    public Condition andIdDsdDsssNotIn(List<Object> list) {
+    public Condition andIdNotIn(List<Object> list) {
       this.params.addAll(list);
       StringBuffer sb=new StringBuffer();
       for(Object object:list) {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id_dsd_dsss not in ("+sb.toString()+")",null);
+      return simplify(" id not in ("+sb.toString()+")",null);
     }
 
-    public Condition andIdDsdDsssBetweenTo(Object start, Object end) {
-      return simplify(" id_dsd_dsss between ? and ?",new Object[]{start,end});
+    public Condition andIdBetweenTo(Object start, Object end) {
+      return simplify(" id between ? and ?",new Object[]{start,end});
     }
 
-    public Condition andIdDsdDsssNotBetweenTo(Object start, Object end) {
-      return simplify(" id_dsd_dsss not between ? and ?",new Object[]{start,end});
+    public Condition andIdNotBetweenTo(Object start, Object end) {
+      return simplify(" id not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andDescIsNull() {

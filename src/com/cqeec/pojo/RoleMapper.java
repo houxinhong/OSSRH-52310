@@ -7,6 +7,7 @@ import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
@@ -29,7 +30,7 @@ public class RoleMapper {
     SqlUtil.save(sql,role);
   }
 
-  public void delete(Integer primaryKey) {
+  public void delete(Long primaryKey) {
     String sql=SqlUtil.getDeleteSql(Role.class)+"where id=?";
     SqlUtil.delete(sql,primaryKey);
   }
@@ -39,7 +40,7 @@ public class RoleMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
   }
 
-  public Role select(Integer primaryKey) {
+  public Role select(Long primaryKey) {
     String sql=SqlUtil.getSelectSql(Role.class, "where id=?");
     List<Object> temp=SqlUtil.select(sql,Role.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Role)temp.get(0):null;
@@ -51,14 +52,14 @@ public class RoleMapper {
     }
   }
 
-  public void batchDelete(Integer[] primaryKeys) {
-    for(Integer primaryKey:primaryKeys) {
+  public void batchDelete(Long[] primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
 
-  public void batchDelete(List<Integer> primaryKeys) {
-    for(Integer primaryKey:primaryKeys) {
+  public void batchDelete(List<Long> primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
@@ -69,17 +70,17 @@ public class RoleMapper {
     }
   }
 
-  public List<Role> batchSelect(Integer[] primaryKeys) {
+  public List<Role> batchSelect(Long[] primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Integer primaryKey:primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
   }
 
-  public List<Role> batchSelect(List<Integer> primaryKeys) {
+  public List<Role> batchSelect(List<Long> primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Integer primaryKey:primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
