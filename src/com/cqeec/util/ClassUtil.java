@@ -2,6 +2,7 @@ package com.cqeec.util;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,21 +186,30 @@ public class ClassUtil {
 	}
 	
 	public static String getPrimaryKeyByClass(Class clazz) {
-		Method[] methods=clazz.getDeclaredMethods();
-		for(Method method:methods) {
-			Id id=method.getDeclaredAnnotation(Id.class);
+		Field[] fields=clazz.getDeclaredFields();
+		for(Field field:fields) {
+			Id id=field.getDeclaredAnnotation(Id.class);
 			if(id!=null) {
 				return id.value(); 
 			}
 		}
-		
 		Table table=(Table) clazz.getDeclaredAnnotation(Table.class);
 		if(table==null) {
 			return getPrimaryKeyByClassName(ClassName.get(clazz));
 		}else {
-			 String tableName=table.value();
-			 String simpleName=getClassSimpleName(tableName);
+			String tableName=table.value();
+			String simpleName=getClassSimpleName(tableName);
 			return getPrimaryKeyByClassName(ClassName.get(GlobalParams.properties.getProperty("targetPackage"), simpleName));
 		}
+	}
+	public static String getPrimaryKeyFieldName(Class clazz) {
+		Field[] fields=clazz.getDeclaredFields();
+		for(Field field:fields) {
+			if(field.getDeclaredAnnotation(Id.class)!=null) {
+				return field.getName();
+			}
+		}
+		return getPrimaryKeyByClass(clazz);
+		
 	}
 }

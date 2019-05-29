@@ -28,9 +28,9 @@ public class CollectionUtil {
 		Object[] params=new Object[fields.length];		
 		int index=0;
 		for(Field field:fields) {
-			if(!field.getName().equals(ClassUtil.getPrimaryKeyByClass(object.getClass()))) {
+			if(!ColumnUtil.getColumnNameByField(field).equals(ClassUtil.getPrimaryKeyByClass(object.getClass()))) {
 				for(Method method:methods) {
-					if(method.getName().contains("get"+StringUtil.firstLetterUpper(field.getName()))) {
+					if(method.getName().contains("get"+ClassUtil.getClassSimpleName(field.getName()))) {
 						try {
 								params[index]=method.invoke(object);
 						} catch (Exception e) {
@@ -43,7 +43,7 @@ public class CollectionUtil {
 			}
 		}
 		try {
-			params[index]=object.getClass().getDeclaredMethod("get"+ClassUtil.getClassSimpleName(ClassUtil.getPrimaryKeyByClass(object.getClass()))).invoke(object);
+			params[index]=object.getClass().getDeclaredMethod("get"+ClassUtil.getClassSimpleName(ClassUtil.getPrimaryKeyFieldName(object.getClass()))).invoke(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

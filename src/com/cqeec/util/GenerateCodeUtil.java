@@ -191,7 +191,7 @@ public class GenerateCodeUtil {
 	        		  addParameter(condition, "condition").
 	        		  addStatement("$T list=selectByCondition(condition)",TypeNameListChangeObj).
 	        		  beginControlFlow("for($T $L:list) ",clazz,firstLowerClassName).
-	        		  addStatement("delete($L.get"+ClassUtil.getClassSimpleName(primaryKey__)+"())",firstLowerClassName).
+	        		  addStatement("delete(($T)$T.callPKGetMethod($L))",primaryKey_class,ColumnUtil.class,firstLowerClassName).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteByCondition);
@@ -263,7 +263,7 @@ public class GenerateCodeUtil {
 	        		  addStatement("sql+=\" where \"+arrStr[1]").
 	        		  addStatement("List<Object> list=SqlUtil.select(sql,$L.class, params)",className).
 	        		  beginControlFlow("for(Object object:list)").
-	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where \"+ClassUtil.getPrimaryKeyByClass($L.class)+\"=?\", (($L)object).get"+ClassUtil.getClassSimpleName(primaryKey__)+"())",className,className,className).
+	        		  addStatement("SqlUtil.delete(SqlUtil.getDeleteSql($L.class)+\"where \"+ClassUtil.getPrimaryKeyByClass($L.class)+\"=?\", ($T)$T.callPKGetMethod(object))",className,className,primaryKey_class,ColumnUtil.class).
 	        		  endControlFlow().
 	        		  build();
 	          methodSpecs.add(deleteBySql);
@@ -450,74 +450,75 @@ public class GenerateCodeUtil {
 	                List<ColumnInfo> columnInfos=tableInfo.getCloumnInfoList();
 	             for(ColumnInfo columnInfo:columnInfos) {
 	            	 String columnName=columnInfo.getName();
-	            	 columnName="ClassUtil.getPrimaryKeyByClass($L.class)";
 	            	 String methodName=ClassUtil.getClassSimpleName(columnName);
+	            	 columnName="\""+columnName+"\"";
+	            	 //columnName="$T.getFieldName($L.class,\""+columnName+"\")";
 	            	 MethodSpec method1=MethodSpec.methodBuilder("and"+methodName+"IsNull").
 		                		addModifiers(Modifier.PUBLIC).
 		                		returns(condition).
-		                		addStatement("return simplify(\" "+columnName+" is null \",null)").
+		                		addStatement("return simplify("+columnName+"+\" is null \",null)",ColumnUtil.class,className).
 		                		build();
 	            	 
 	            	 MethodSpec method2=MethodSpec.methodBuilder("and"+methodName+"NotNull").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 returns(condition).
-	            			 addStatement("return simplify("+columnName+"\" is not null \",null)").
+	            			 addStatement("return simplify("+columnName+"+\" is not null \",null)",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method3=MethodSpec.methodBuilder("and"+methodName+"EqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" = ? \",new Object[]{val})").
+	            			 addStatement("return simplify("+columnName+"+\" = ? \",new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method4=MethodSpec.methodBuilder("and"+methodName+"NotEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" != ? \",new Object[]{val})").
+	            			 addStatement("return simplify("+columnName+"+\" != ? \",new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method5=MethodSpec.methodBuilder("and"+methodName+"GreaterThan").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" > ? \", new Object[]{val})").
+	            			 addStatement("return simplify("+columnName+"+\" > ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method6=MethodSpec.methodBuilder("and"+methodName+"GreaterThanOrEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" >= ? \", new Object[]{val})").
+	            			 addStatement("return simplify( "+columnName+"+\" >= ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method7=MethodSpec.methodBuilder("and"+methodName+"LessThan").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" < ? \", new Object[]{val})").
+	            			 addStatement("return simplify( "+columnName+"+\" < ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method8=MethodSpec.methodBuilder("and"+methodName+"LessThanOrEqualTo").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement(" return simplify(\" "+columnName+" <= ? \", new Object[]{val})").
+	            			 addStatement(" return simplify("+columnName+"+\" <= ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method9=MethodSpec.methodBuilder("and"+methodName+"Like").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" like ? \", new Object[]{val})").
+	            			 addStatement("return simplify( "+columnName+"+\" like ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method10=MethodSpec.methodBuilder("and"+methodName+"NotLike").
 	            			 addModifiers(Modifier.PUBLIC).
 	            			 addParameter(Object.class,"val").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" not like ? \", new Object[]{val})").
+	            			 addStatement("return simplify( "+columnName+"+\" not like ? \", new Object[]{val})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method11=MethodSpec.methodBuilder("and"+methodName+"In").
@@ -530,7 +531,7 @@ public class GenerateCodeUtil {
 	            			     addStatement("sb.append(\"?,\")").
 	            			 endControlFlow().
 	            			 addStatement("$T.clearEndChar(sb)",StringUtil.class).
-	            			 addStatement("return simplify(\" "+columnName+" in (\"+sb.toString()+\")\",null)").
+	            			 addStatement("return simplify("+columnName+"+\" in (\"+sb.toString()+\")\",null)",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method12=MethodSpec.methodBuilder("and"+methodName+"NotIn").
@@ -543,7 +544,7 @@ public class GenerateCodeUtil {
 	            			 addStatement("sb.append(\"?,\")").
 	            			 endControlFlow().
 	            			 addStatement("StringUtil.clearEndChar(sb)").
-	            			 addStatement("return simplify(\" "+columnName+" not in (\"+sb.toString()+\")\",null)").
+	            			 addStatement("return simplify("+columnName+"+\" not in (\"+sb.toString()+\")\",null)",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method13=MethodSpec.methodBuilder("and"+methodName+"BetweenTo").
@@ -551,7 +552,7 @@ public class GenerateCodeUtil {
 	            			 addParameter(Object.class,"start").
 	            			 addParameter(Object.class,"end").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" between ? and ?\",new Object[]{start,end})").
+	            			 addStatement("return simplify("+columnName+"+\" between ? and ?\",new Object[]{start,end})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 MethodSpec method14=MethodSpec.methodBuilder("and"+methodName+"NotBetweenTo").
@@ -559,7 +560,7 @@ public class GenerateCodeUtil {
 	            			 addParameter(Object.class,"start").
 	            			 addParameter(Object.class,"end").
 	            			 returns(condition).
-	            			 addStatement("return simplify(\" "+columnName+" not between ? and ?\",new Object[]{start,end})").
+	            			 addStatement("return simplify("+columnName+"+\" not between ? and ?\",new Object[]{start,end})",ColumnUtil.class,className).
 	            			 build();
 	            	 
 	            	 conditionTypeBuilder.addMethod(method1);

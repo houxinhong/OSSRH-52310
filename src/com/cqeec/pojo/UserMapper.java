@@ -3,6 +3,7 @@ package com.cqeec.pojo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.ColumnUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
@@ -90,7 +91,7 @@ public class UserMapper {
   public void deleteByCondition(Condition condition) {
     List<User> list=selectByCondition(condition);
     for(User user:list)  {
-      delete(user.getId());
+      delete((Long)ColumnUtil.callPKGetMethod(user));
     }
   }
 
@@ -139,7 +140,7 @@ public class UserMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,User.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(User.class)+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?", ((User)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(User.class)+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?", (Long)ColumnUtil.callPKGetMethod(object));
     }
   }
 
@@ -251,43 +252,43 @@ public class UserMapper {
     }
 
     public Condition andPasswordIsNull() {
-      return simplify(" password is null ",null);
+      return simplify("password"+" is null ",null);
     }
 
     public Condition andPasswordNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("password"+" is not null ",null);
     }
 
     public Condition andPasswordEqualTo(Object val) {
-      return simplify(" password = ? ",new Object[]{val});
+      return simplify("password"+" = ? ",new Object[]{val});
     }
 
     public Condition andPasswordNotEqualTo(Object val) {
-      return simplify(" password != ? ",new Object[]{val});
+      return simplify("password"+" != ? ",new Object[]{val});
     }
 
     public Condition andPasswordGreaterThan(Object val) {
-      return simplify(" password > ? ", new Object[]{val});
+      return simplify("password"+" > ? ", new Object[]{val});
     }
 
     public Condition andPasswordGreaterThanOrEqualTo(Object val) {
-      return simplify(" password >= ? ", new Object[]{val});
+      return simplify( "password"+" >= ? ", new Object[]{val});
     }
 
     public Condition andPasswordLessThan(Object val) {
-      return simplify(" password < ? ", new Object[]{val});
+      return simplify( "password"+" < ? ", new Object[]{val});
     }
 
     public Condition andPasswordLessThanOrEqualTo(Object val) {
-       return simplify(" password <= ? ", new Object[]{val});
+       return simplify("password"+" <= ? ", new Object[]{val});
     }
 
     public Condition andPasswordLike(Object val) {
-      return simplify(" password like ? ", new Object[]{val});
+      return simplify( "password"+" like ? ", new Object[]{val});
     }
 
     public Condition andPasswordNotLike(Object val) {
-      return simplify(" password not like ? ", new Object[]{val});
+      return simplify( "password"+" not like ? ", new Object[]{val});
     }
 
     public Condition andPasswordIn(List<Object> list) {
@@ -297,7 +298,7 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" password in ("+sb.toString()+")",null);
+      return simplify("password"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andPasswordNotIn(List<Object> list) {
@@ -307,55 +308,55 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" password not in ("+sb.toString()+")",null);
+      return simplify("password"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andPasswordBetweenTo(Object start, Object end) {
-      return simplify(" password between ? and ?",new Object[]{start,end});
+      return simplify("password"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andPasswordNotBetweenTo(Object start, Object end) {
-      return simplify(" password not between ? and ?",new Object[]{start,end});
+      return simplify("password"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andSaltIsNull() {
-      return simplify(" salt is null ",null);
+      return simplify("salt"+" is null ",null);
     }
 
     public Condition andSaltNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("salt"+" is not null ",null);
     }
 
     public Condition andSaltEqualTo(Object val) {
-      return simplify(" salt = ? ",new Object[]{val});
+      return simplify("salt"+" = ? ",new Object[]{val});
     }
 
     public Condition andSaltNotEqualTo(Object val) {
-      return simplify(" salt != ? ",new Object[]{val});
+      return simplify("salt"+" != ? ",new Object[]{val});
     }
 
     public Condition andSaltGreaterThan(Object val) {
-      return simplify(" salt > ? ", new Object[]{val});
+      return simplify("salt"+" > ? ", new Object[]{val});
     }
 
     public Condition andSaltGreaterThanOrEqualTo(Object val) {
-      return simplify(" salt >= ? ", new Object[]{val});
+      return simplify( "salt"+" >= ? ", new Object[]{val});
     }
 
     public Condition andSaltLessThan(Object val) {
-      return simplify(" salt < ? ", new Object[]{val});
+      return simplify( "salt"+" < ? ", new Object[]{val});
     }
 
     public Condition andSaltLessThanOrEqualTo(Object val) {
-       return simplify(" salt <= ? ", new Object[]{val});
+       return simplify("salt"+" <= ? ", new Object[]{val});
     }
 
     public Condition andSaltLike(Object val) {
-      return simplify(" salt like ? ", new Object[]{val});
+      return simplify( "salt"+" like ? ", new Object[]{val});
     }
 
     public Condition andSaltNotLike(Object val) {
-      return simplify(" salt not like ? ", new Object[]{val});
+      return simplify( "salt"+" not like ? ", new Object[]{val});
     }
 
     public Condition andSaltIn(List<Object> list) {
@@ -365,7 +366,7 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" salt in ("+sb.toString()+")",null);
+      return simplify("salt"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andSaltNotIn(List<Object> list) {
@@ -375,55 +376,55 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" salt not in ("+sb.toString()+")",null);
+      return simplify("salt"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andSaltBetweenTo(Object start, Object end) {
-      return simplify(" salt between ? and ?",new Object[]{start,end});
+      return simplify("salt"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andSaltNotBetweenTo(Object start, Object end) {
-      return simplify(" salt not between ? and ?",new Object[]{start,end});
+      return simplify("salt"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameIsNull() {
-      return simplify(" name is null ",null);
+      return simplify("name"+" is null ",null);
     }
 
     public Condition andNameNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("name"+" is not null ",null);
     }
 
     public Condition andNameEqualTo(Object val) {
-      return simplify(" name = ? ",new Object[]{val});
+      return simplify("name"+" = ? ",new Object[]{val});
     }
 
     public Condition andNameNotEqualTo(Object val) {
-      return simplify(" name != ? ",new Object[]{val});
+      return simplify("name"+" != ? ",new Object[]{val});
     }
 
     public Condition andNameGreaterThan(Object val) {
-      return simplify(" name > ? ", new Object[]{val});
+      return simplify("name"+" > ? ", new Object[]{val});
     }
 
     public Condition andNameGreaterThanOrEqualTo(Object val) {
-      return simplify(" name >= ? ", new Object[]{val});
+      return simplify( "name"+" >= ? ", new Object[]{val});
     }
 
     public Condition andNameLessThan(Object val) {
-      return simplify(" name < ? ", new Object[]{val});
+      return simplify( "name"+" < ? ", new Object[]{val});
     }
 
     public Condition andNameLessThanOrEqualTo(Object val) {
-       return simplify(" name <= ? ", new Object[]{val});
+       return simplify("name"+" <= ? ", new Object[]{val});
     }
 
     public Condition andNameLike(Object val) {
-      return simplify(" name like ? ", new Object[]{val});
+      return simplify( "name"+" like ? ", new Object[]{val});
     }
 
     public Condition andNameNotLike(Object val) {
-      return simplify(" name not like ? ", new Object[]{val});
+      return simplify( "name"+" not like ? ", new Object[]{val});
     }
 
     public Condition andNameIn(List<Object> list) {
@@ -433,7 +434,7 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" name in ("+sb.toString()+")",null);
+      return simplify("name"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andNameNotIn(List<Object> list) {
@@ -443,55 +444,55 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" name not in ("+sb.toString()+")",null);
+      return simplify("name"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andNameBetweenTo(Object start, Object end) {
-      return simplify(" name between ? and ?",new Object[]{start,end});
+      return simplify("name"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameNotBetweenTo(Object start, Object end) {
-      return simplify(" name not between ? and ?",new Object[]{start,end});
+      return simplify("name"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdIsNull() {
-      return simplify(" id is null ",null);
+      return simplify("id"+" is null ",null);
     }
 
     public Condition andIdNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("id"+" is not null ",null);
     }
 
     public Condition andIdEqualTo(Object val) {
-      return simplify(" id = ? ",new Object[]{val});
+      return simplify("id"+" = ? ",new Object[]{val});
     }
 
     public Condition andIdNotEqualTo(Object val) {
-      return simplify(" id != ? ",new Object[]{val});
+      return simplify("id"+" != ? ",new Object[]{val});
     }
 
     public Condition andIdGreaterThan(Object val) {
-      return simplify(" id > ? ", new Object[]{val});
+      return simplify("id"+" > ? ", new Object[]{val});
     }
 
     public Condition andIdGreaterThanOrEqualTo(Object val) {
-      return simplify(" id >= ? ", new Object[]{val});
+      return simplify( "id"+" >= ? ", new Object[]{val});
     }
 
     public Condition andIdLessThan(Object val) {
-      return simplify(" id < ? ", new Object[]{val});
+      return simplify( "id"+" < ? ", new Object[]{val});
     }
 
     public Condition andIdLessThanOrEqualTo(Object val) {
-       return simplify(" id <= ? ", new Object[]{val});
+       return simplify("id"+" <= ? ", new Object[]{val});
     }
 
     public Condition andIdLike(Object val) {
-      return simplify(" id like ? ", new Object[]{val});
+      return simplify( "id"+" like ? ", new Object[]{val});
     }
 
     public Condition andIdNotLike(Object val) {
-      return simplify(" id not like ? ", new Object[]{val});
+      return simplify( "id"+" not like ? ", new Object[]{val});
     }
 
     public Condition andIdIn(List<Object> list) {
@@ -501,7 +502,7 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id in ("+sb.toString()+")",null);
+      return simplify("id"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andIdNotIn(List<Object> list) {
@@ -511,15 +512,15 @@ public class UserMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id not in ("+sb.toString()+")",null);
+      return simplify("id"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andIdBetweenTo(Object start, Object end) {
-      return simplify(" id between ? and ?",new Object[]{start,end});
+      return simplify("id"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdNotBetweenTo(Object start, Object end) {
-      return simplify(" id not between ? and ?",new Object[]{start,end});
+      return simplify("id"+" not between ? and ?",new Object[]{start,end});
     }
   }
 }

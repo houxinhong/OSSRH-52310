@@ -3,11 +3,13 @@ package com.cqeec.pojo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.ColumnUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
 import java.lang.Deprecated;
 import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
@@ -30,7 +32,7 @@ public class RoleMapper {
     SqlUtil.save(sql,role);
   }
 
-  public void delete(Integer primaryKey) {
+  public void delete(Long primaryKey) {
     String sql=SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
@@ -40,7 +42,7 @@ public class RoleMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
   }
 
-  public Role select(Integer primaryKey) {
+  public Role select(Long primaryKey) {
     String sql=SqlUtil.getSelectSql(Role.class, "where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,Role.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Role)temp.get(0):null;
@@ -52,14 +54,14 @@ public class RoleMapper {
     }
   }
 
-  public void batchDelete(Integer[] primaryKeys) {
-    for(Integer primaryKey:primaryKeys) {
+  public void batchDelete(Long[] primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
 
-  public void batchDelete(List<Integer> primaryKeys) {
-    for(Integer primaryKey:primaryKeys) {
+  public void batchDelete(List<Long> primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
@@ -70,17 +72,17 @@ public class RoleMapper {
     }
   }
 
-  public List<Role> batchSelect(Integer[] primaryKeys) {
+  public List<Role> batchSelect(Long[] primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Integer primaryKey:primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
   }
 
-  public List<Role> batchSelect(List<Integer> primaryKeys) {
+  public List<Role> batchSelect(List<Long> primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Integer primaryKey:primaryKeys) {
+    for(Long primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
@@ -89,7 +91,7 @@ public class RoleMapper {
   public void deleteByCondition(Condition condition) {
     List<Role> list=selectByCondition(condition);
     for(Role role:list)  {
-      delete(role.getId());
+      delete((Long)ColumnUtil.callPKGetMethod(role));
     }
   }
 
@@ -138,7 +140,7 @@ public class RoleMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,Role.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?", ((Role)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?", (Long)ColumnUtil.callPKGetMethod(object));
     }
   }
 
@@ -249,44 +251,112 @@ public class RoleMapper {
       return params.toArray();
     }
 
+    public Condition andSdDasdIsNull() {
+      return simplify("sd_dasd"+" is null ",null);
+    }
+
+    public Condition andSdDasdNotNull() {
+      return simplify("sd_dasd"+" is not null ",null);
+    }
+
+    public Condition andSdDasdEqualTo(Object val) {
+      return simplify("sd_dasd"+" = ? ",new Object[]{val});
+    }
+
+    public Condition andSdDasdNotEqualTo(Object val) {
+      return simplify("sd_dasd"+" != ? ",new Object[]{val});
+    }
+
+    public Condition andSdDasdGreaterThan(Object val) {
+      return simplify("sd_dasd"+" > ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdGreaterThanOrEqualTo(Object val) {
+      return simplify( "sd_dasd"+" >= ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdLessThan(Object val) {
+      return simplify( "sd_dasd"+" < ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdLessThanOrEqualTo(Object val) {
+       return simplify("sd_dasd"+" <= ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdLike(Object val) {
+      return simplify( "sd_dasd"+" like ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdNotLike(Object val) {
+      return simplify( "sd_dasd"+" not like ? ", new Object[]{val});
+    }
+
+    public Condition andSdDasdIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify("sd_dasd"+" in ("+sb.toString()+")",null);
+    }
+
+    public Condition andSdDasdNotIn(List<Object> list) {
+      this.params.addAll(list);
+      StringBuffer sb=new StringBuffer();
+      for(Object object:list) {
+        sb.append("?,");
+      }
+      StringUtil.clearEndChar(sb);
+      return simplify("sd_dasd"+" not in ("+sb.toString()+")",null);
+    }
+
+    public Condition andSdDasdBetweenTo(Object start, Object end) {
+      return simplify("sd_dasd"+" between ? and ?",new Object[]{start,end});
+    }
+
+    public Condition andSdDasdNotBetweenTo(Object start, Object end) {
+      return simplify("sd_dasd"+" not between ? and ?",new Object[]{start,end});
+    }
+
     public Condition andNameIsNull() {
-      return simplify(" name is null ",null);
+      return simplify("name"+" is null ",null);
     }
 
     public Condition andNameNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("name"+" is not null ",null);
     }
 
     public Condition andNameEqualTo(Object val) {
-      return simplify(" name = ? ",new Object[]{val});
+      return simplify("name"+" = ? ",new Object[]{val});
     }
 
     public Condition andNameNotEqualTo(Object val) {
-      return simplify(" name != ? ",new Object[]{val});
+      return simplify("name"+" != ? ",new Object[]{val});
     }
 
     public Condition andNameGreaterThan(Object val) {
-      return simplify(" name > ? ", new Object[]{val});
+      return simplify("name"+" > ? ", new Object[]{val});
     }
 
     public Condition andNameGreaterThanOrEqualTo(Object val) {
-      return simplify(" name >= ? ", new Object[]{val});
+      return simplify( "name"+" >= ? ", new Object[]{val});
     }
 
     public Condition andNameLessThan(Object val) {
-      return simplify(" name < ? ", new Object[]{val});
+      return simplify( "name"+" < ? ", new Object[]{val});
     }
 
     public Condition andNameLessThanOrEqualTo(Object val) {
-       return simplify(" name <= ? ", new Object[]{val});
+       return simplify("name"+" <= ? ", new Object[]{val});
     }
 
     public Condition andNameLike(Object val) {
-      return simplify(" name like ? ", new Object[]{val});
+      return simplify( "name"+" like ? ", new Object[]{val});
     }
 
     public Condition andNameNotLike(Object val) {
-      return simplify(" name not like ? ", new Object[]{val});
+      return simplify( "name"+" not like ? ", new Object[]{val});
     }
 
     public Condition andNameIn(List<Object> list) {
@@ -296,7 +366,7 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" name in ("+sb.toString()+")",null);
+      return simplify("name"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andNameNotIn(List<Object> list) {
@@ -306,55 +376,55 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" name not in ("+sb.toString()+")",null);
+      return simplify("name"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andNameBetweenTo(Object start, Object end) {
-      return simplify(" name between ? and ?",new Object[]{start,end});
+      return simplify("name"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameNotBetweenTo(Object start, Object end) {
-      return simplify(" name not between ? and ?",new Object[]{start,end});
+      return simplify("name"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdIsNull() {
-      return simplify(" id is null ",null);
+      return simplify("id"+" is null ",null);
     }
 
     public Condition andIdNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("id"+" is not null ",null);
     }
 
     public Condition andIdEqualTo(Object val) {
-      return simplify(" id = ? ",new Object[]{val});
+      return simplify("id"+" = ? ",new Object[]{val});
     }
 
     public Condition andIdNotEqualTo(Object val) {
-      return simplify(" id != ? ",new Object[]{val});
+      return simplify("id"+" != ? ",new Object[]{val});
     }
 
     public Condition andIdGreaterThan(Object val) {
-      return simplify(" id > ? ", new Object[]{val});
+      return simplify("id"+" > ? ", new Object[]{val});
     }
 
     public Condition andIdGreaterThanOrEqualTo(Object val) {
-      return simplify(" id >= ? ", new Object[]{val});
+      return simplify( "id"+" >= ? ", new Object[]{val});
     }
 
     public Condition andIdLessThan(Object val) {
-      return simplify(" id < ? ", new Object[]{val});
+      return simplify( "id"+" < ? ", new Object[]{val});
     }
 
     public Condition andIdLessThanOrEqualTo(Object val) {
-       return simplify(" id <= ? ", new Object[]{val});
+       return simplify("id"+" <= ? ", new Object[]{val});
     }
 
     public Condition andIdLike(Object val) {
-      return simplify(" id like ? ", new Object[]{val});
+      return simplify( "id"+" like ? ", new Object[]{val});
     }
 
     public Condition andIdNotLike(Object val) {
-      return simplify(" id not like ? ", new Object[]{val});
+      return simplify( "id"+" not like ? ", new Object[]{val});
     }
 
     public Condition andIdIn(List<Object> list) {
@@ -364,7 +434,7 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id in ("+sb.toString()+")",null);
+      return simplify("id"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andIdNotIn(List<Object> list) {
@@ -374,55 +444,55 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id not in ("+sb.toString()+")",null);
+      return simplify("id"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andIdBetweenTo(Object start, Object end) {
-      return simplify(" id between ? and ?",new Object[]{start,end});
+      return simplify("id"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdNotBetweenTo(Object start, Object end) {
-      return simplify(" id not between ? and ?",new Object[]{start,end});
+      return simplify("id"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andDescIsNull() {
-      return simplify(" desc_ is null ",null);
+      return simplify("desc_"+" is null ",null);
     }
 
     public Condition andDescNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("desc_"+" is not null ",null);
     }
 
     public Condition andDescEqualTo(Object val) {
-      return simplify(" desc_ = ? ",new Object[]{val});
+      return simplify("desc_"+" = ? ",new Object[]{val});
     }
 
     public Condition andDescNotEqualTo(Object val) {
-      return simplify(" desc_ != ? ",new Object[]{val});
+      return simplify("desc_"+" != ? ",new Object[]{val});
     }
 
     public Condition andDescGreaterThan(Object val) {
-      return simplify(" desc_ > ? ", new Object[]{val});
+      return simplify("desc_"+" > ? ", new Object[]{val});
     }
 
     public Condition andDescGreaterThanOrEqualTo(Object val) {
-      return simplify(" desc_ >= ? ", new Object[]{val});
+      return simplify( "desc_"+" >= ? ", new Object[]{val});
     }
 
     public Condition andDescLessThan(Object val) {
-      return simplify(" desc_ < ? ", new Object[]{val});
+      return simplify( "desc_"+" < ? ", new Object[]{val});
     }
 
     public Condition andDescLessThanOrEqualTo(Object val) {
-       return simplify(" desc_ <= ? ", new Object[]{val});
+       return simplify("desc_"+" <= ? ", new Object[]{val});
     }
 
     public Condition andDescLike(Object val) {
-      return simplify(" desc_ like ? ", new Object[]{val});
+      return simplify( "desc_"+" like ? ", new Object[]{val});
     }
 
     public Condition andDescNotLike(Object val) {
-      return simplify(" desc_ not like ? ", new Object[]{val});
+      return simplify( "desc_"+" not like ? ", new Object[]{val});
     }
 
     public Condition andDescIn(List<Object> list) {
@@ -432,7 +502,7 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" desc_ in ("+sb.toString()+")",null);
+      return simplify("desc_"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andDescNotIn(List<Object> list) {
@@ -442,15 +512,15 @@ public class RoleMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" desc_ not in ("+sb.toString()+")",null);
+      return simplify("desc_"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andDescBetweenTo(Object start, Object end) {
-      return simplify(" desc_ between ? and ?",new Object[]{start,end});
+      return simplify("desc_"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andDescNotBetweenTo(Object start, Object end) {
-      return simplify(" desc_ not between ? and ?",new Object[]{start,end});
+      return simplify("desc_"+" not between ? and ?",new Object[]{start,end});
     }
   }
 }

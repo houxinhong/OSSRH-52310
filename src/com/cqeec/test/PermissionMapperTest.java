@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.cqeec.bean.PageInfo;
-import com.cqeec.pojo.Permission;
+import com.cqeec.pojo.Permissions;
 import com.cqeec.pojo.PermissionMapper;
 import com.cqeec.pojo.RoleMapper;
 import com.cqeec.pojo.RolePermission;
@@ -26,43 +26,42 @@ public class PermissionMapperTest {
 
 	@Test
 	public void insert() {
-		Permission permission=new Permission("test",16L, "1111","/dddd");
+		Permissions permission=new Permissions("test",16L, "1111","/dddd");
 	    mapper.insert(permission);		
 	}
 
 	@Test
 	public void delete() {
-		mapper.delete(15L);
+		mapper.delete(16L);
 	}
 
 	@Test
 	public void update() {
-		Permission permission=mapper.select(2L);
+		Permissions permission=mapper.select(6L);
 		permission.setName("111661111222222");
 		mapper.update(permission);
 	}
 
 	@Test
 	public void select() {
-		System.out.println(mapper.select(3L));
+		System.out.println(mapper.select(6L));
 	}
 	
 	@Test
 	public void deleteByCondition() {
-		Condition condition=mapper.createCondtion().andIdEqualTo(2);
+		Condition condition=mapper.createCondtion().andIdEqualTo(15);
 		mapper.deleteByCondition(condition);
 	}
     
 	@Test
 	public void selectByCondition() {
-		Condition condition=mapper.createCondtion().andIdEqualTo(3);
-		Permission permission=mapper.selectByCondition(condition).get(0);
-		System.out.println(permission);
+		Condition condition=mapper.createCondtion().andUrlLike("%t%");
+		System.out.println(mapper.selectByCondition(condition));
 	}
 	
 	@Test
 	public void selectByConditionWithPagination() {
-		PageInfo<Permission> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(1, 3));
+		PageInfo<Permissions> pageInfo=mapper.selectByConditionWithPagination(null,new PageInfo<>(1, 3));
 		System.out.println(pageInfo.getStartPageButton());
 		System.out.println(pageInfo.getEndPageButton());
 		System.out.println(pageInfo.getList());
@@ -73,8 +72,8 @@ public class PermissionMapperTest {
 	@Test
 	public void tableAndColumnAnnotation() throws NoSuchFieldException, SecurityException {
 		System.out.println(TableUtil.getTableNameByClass(RolePermission.class));
-		System.out.println(TableUtil.getTableNameByClass(Permission.class));
-		System.out.println(ColumnUtil.getColumnNameByField(Permission.class.getDeclaredField("name")));
+		System.out.println(TableUtil.getTableNameByClass(Permissions.class));
+		System.out.println(ColumnUtil.getColumnNameByField(Permissions.class.getDeclaredField("name")));
 	}
 	
 	

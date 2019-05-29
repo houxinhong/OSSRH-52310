@@ -3,6 +3,7 @@ package com.cqeec.pojo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.util.ClassUtil;
 import com.cqeec.util.CollectionUtil;
+import com.cqeec.util.ColumnUtil;
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.SqlUtil;
 import com.cqeec.util.StringUtil;
@@ -90,7 +91,7 @@ public class RolePermissionMapper {
   public void deleteByCondition(Condition condition) {
     List<RolePermission> list=selectByCondition(condition);
     for(RolePermission rolePermission:list)  {
-      delete(rolePermission.getId());
+      delete((Long)ColumnUtil.callPKGetMethod(rolePermission));
     }
   }
 
@@ -139,7 +140,7 @@ public class RolePermissionMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,RolePermission.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(RolePermission.class)+"where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?", ((RolePermission)object).getId());
+      SqlUtil.delete(SqlUtil.getDeleteSql(RolePermission.class)+"where "+ClassUtil.getPrimaryKeyByClass(RolePermission.class)+"=?", (Long)ColumnUtil.callPKGetMethod(object));
     }
   }
 
@@ -251,43 +252,43 @@ public class RolePermissionMapper {
     }
 
     public Condition andPidIsNull() {
-      return simplify(" pid is null ",null);
+      return simplify("pid"+" is null ",null);
     }
 
     public Condition andPidNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("pid"+" is not null ",null);
     }
 
     public Condition andPidEqualTo(Object val) {
-      return simplify(" pid = ? ",new Object[]{val});
+      return simplify("pid"+" = ? ",new Object[]{val});
     }
 
     public Condition andPidNotEqualTo(Object val) {
-      return simplify(" pid != ? ",new Object[]{val});
+      return simplify("pid"+" != ? ",new Object[]{val});
     }
 
     public Condition andPidGreaterThan(Object val) {
-      return simplify(" pid > ? ", new Object[]{val});
+      return simplify("pid"+" > ? ", new Object[]{val});
     }
 
     public Condition andPidGreaterThanOrEqualTo(Object val) {
-      return simplify(" pid >= ? ", new Object[]{val});
+      return simplify( "pid"+" >= ? ", new Object[]{val});
     }
 
     public Condition andPidLessThan(Object val) {
-      return simplify(" pid < ? ", new Object[]{val});
+      return simplify( "pid"+" < ? ", new Object[]{val});
     }
 
     public Condition andPidLessThanOrEqualTo(Object val) {
-       return simplify(" pid <= ? ", new Object[]{val});
+       return simplify("pid"+" <= ? ", new Object[]{val});
     }
 
     public Condition andPidLike(Object val) {
-      return simplify(" pid like ? ", new Object[]{val});
+      return simplify( "pid"+" like ? ", new Object[]{val});
     }
 
     public Condition andPidNotLike(Object val) {
-      return simplify(" pid not like ? ", new Object[]{val});
+      return simplify( "pid"+" not like ? ", new Object[]{val});
     }
 
     public Condition andPidIn(List<Object> list) {
@@ -297,7 +298,7 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" pid in ("+sb.toString()+")",null);
+      return simplify("pid"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andPidNotIn(List<Object> list) {
@@ -307,55 +308,55 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" pid not in ("+sb.toString()+")",null);
+      return simplify("pid"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andPidBetweenTo(Object start, Object end) {
-      return simplify(" pid between ? and ?",new Object[]{start,end});
+      return simplify("pid"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andPidNotBetweenTo(Object start, Object end) {
-      return simplify(" pid not between ? and ?",new Object[]{start,end});
+      return simplify("pid"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdIsNull() {
-      return simplify(" id is null ",null);
+      return simplify("id"+" is null ",null);
     }
 
     public Condition andIdNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("id"+" is not null ",null);
     }
 
     public Condition andIdEqualTo(Object val) {
-      return simplify(" id = ? ",new Object[]{val});
+      return simplify("id"+" = ? ",new Object[]{val});
     }
 
     public Condition andIdNotEqualTo(Object val) {
-      return simplify(" id != ? ",new Object[]{val});
+      return simplify("id"+" != ? ",new Object[]{val});
     }
 
     public Condition andIdGreaterThan(Object val) {
-      return simplify(" id > ? ", new Object[]{val});
+      return simplify("id"+" > ? ", new Object[]{val});
     }
 
     public Condition andIdGreaterThanOrEqualTo(Object val) {
-      return simplify(" id >= ? ", new Object[]{val});
+      return simplify( "id"+" >= ? ", new Object[]{val});
     }
 
     public Condition andIdLessThan(Object val) {
-      return simplify(" id < ? ", new Object[]{val});
+      return simplify( "id"+" < ? ", new Object[]{val});
     }
 
     public Condition andIdLessThanOrEqualTo(Object val) {
-       return simplify(" id <= ? ", new Object[]{val});
+       return simplify("id"+" <= ? ", new Object[]{val});
     }
 
     public Condition andIdLike(Object val) {
-      return simplify(" id like ? ", new Object[]{val});
+      return simplify( "id"+" like ? ", new Object[]{val});
     }
 
     public Condition andIdNotLike(Object val) {
-      return simplify(" id not like ? ", new Object[]{val});
+      return simplify( "id"+" not like ? ", new Object[]{val});
     }
 
     public Condition andIdIn(List<Object> list) {
@@ -365,7 +366,7 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id in ("+sb.toString()+")",null);
+      return simplify("id"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andIdNotIn(List<Object> list) {
@@ -375,55 +376,55 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" id not in ("+sb.toString()+")",null);
+      return simplify("id"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andIdBetweenTo(Object start, Object end) {
-      return simplify(" id between ? and ?",new Object[]{start,end});
+      return simplify("id"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andIdNotBetweenTo(Object start, Object end) {
-      return simplify(" id not between ? and ?",new Object[]{start,end});
+      return simplify("id"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andRidIsNull() {
-      return simplify(" rid is null ",null);
+      return simplify("rid"+" is null ",null);
     }
 
     public Condition andRidNotNull() {
-      return simplify(" id is not null ",null);
+      return simplify("rid"+" is not null ",null);
     }
 
     public Condition andRidEqualTo(Object val) {
-      return simplify(" rid = ? ",new Object[]{val});
+      return simplify("rid"+" = ? ",new Object[]{val});
     }
 
     public Condition andRidNotEqualTo(Object val) {
-      return simplify(" rid != ? ",new Object[]{val});
+      return simplify("rid"+" != ? ",new Object[]{val});
     }
 
     public Condition andRidGreaterThan(Object val) {
-      return simplify(" rid > ? ", new Object[]{val});
+      return simplify("rid"+" > ? ", new Object[]{val});
     }
 
     public Condition andRidGreaterThanOrEqualTo(Object val) {
-      return simplify(" rid >= ? ", new Object[]{val});
+      return simplify( "rid"+" >= ? ", new Object[]{val});
     }
 
     public Condition andRidLessThan(Object val) {
-      return simplify(" rid < ? ", new Object[]{val});
+      return simplify( "rid"+" < ? ", new Object[]{val});
     }
 
     public Condition andRidLessThanOrEqualTo(Object val) {
-       return simplify(" rid <= ? ", new Object[]{val});
+       return simplify("rid"+" <= ? ", new Object[]{val});
     }
 
     public Condition andRidLike(Object val) {
-      return simplify(" rid like ? ", new Object[]{val});
+      return simplify( "rid"+" like ? ", new Object[]{val});
     }
 
     public Condition andRidNotLike(Object val) {
-      return simplify(" rid not like ? ", new Object[]{val});
+      return simplify( "rid"+" not like ? ", new Object[]{val});
     }
 
     public Condition andRidIn(List<Object> list) {
@@ -433,7 +434,7 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" rid in ("+sb.toString()+")",null);
+      return simplify("rid"+" in ("+sb.toString()+")",null);
     }
 
     public Condition andRidNotIn(List<Object> list) {
@@ -443,15 +444,15 @@ public class RolePermissionMapper {
         sb.append("?,");
       }
       StringUtil.clearEndChar(sb);
-      return simplify(" rid not in ("+sb.toString()+")",null);
+      return simplify("rid"+" not in ("+sb.toString()+")",null);
     }
 
     public Condition andRidBetweenTo(Object start, Object end) {
-      return simplify(" rid between ? and ?",new Object[]{start,end});
+      return simplify("rid"+" between ? and ?",new Object[]{start,end});
     }
 
     public Condition andRidNotBetweenTo(Object start, Object end) {
-      return simplify(" rid not between ? and ?",new Object[]{start,end});
+      return simplify("rid"+" not between ? and ?",new Object[]{start,end});
     }
   }
 }

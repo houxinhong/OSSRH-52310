@@ -1,23 +1,34 @@
 package com.cqeec.pojo;
 
-import java.lang.Integer;
+import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
 
 public class Role {
+  private String sd_dasd;
+
   private String name;
 
-  private Integer id;
+  private Long id;
 
   private String desc_;
 
-  public Role(String name, Integer id, String desc_) {
+  public Role(String sd_dasd, String name, Long id, String desc_) {
+    this.sd_dasd=sd_dasd;
     this.name=name;
     this.id=id;
     this.desc_=desc_;
   }
 
   public Role() {
+  }
+
+  public String getSdDasd() {
+    return sd_dasd;
+  }
+
+  public void setSdDasd(String sd_dasd) {
+    this.sd_dasd=sd_dasd;
   }
 
   public String getName() {
@@ -28,11 +39,11 @@ public class Role {
     this.name=name;
   }
 
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(Long id) {
     this.id=id;
   }
 
@@ -46,6 +57,6 @@ public class Role {
 
   @Override
   public String toString() {
-    return "["+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+"]";
+    return "["+"sd_dasd"+"="+this.sd_dasd+","+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+"]";
   }
 }
