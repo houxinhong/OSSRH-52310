@@ -5,6 +5,7 @@ package com.cqeec.bean;
  * @version 0.8
  */
 public class ColumnInfo {
+	
 	/**
 	 * 字段名称
 	 */
