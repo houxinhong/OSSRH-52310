@@ -196,10 +196,10 @@ public class SqlUtil {
 			String dataType=columns.get(ColumnUtil.getColumnNameByField(field)).getDataType();
 			Class  javaType=MySqlTypeConvertor.databaseType2JavaType(dataType);
 			//属性对应的方法名称
-			String property2MethodName=ClassUtil.getClassSimpleName(StringUtil.firstLetterUpper(field.getName()));
+			String property2MethodName="set"+ClassUtil.getClassSimpleName(StringUtil.firstLetterUpper(field.getName()));
 			
 			for(Method method:methods) {
-				if(method.getName().equals("set"+property2MethodName)) {
+				if(method.getName().equals(property2MethodName)) {
 					//数据库中字段名称
 					String columnName=ColumnUtil.getColumnNameByField(field);
 					if(javaType.equals(String.class)) {
