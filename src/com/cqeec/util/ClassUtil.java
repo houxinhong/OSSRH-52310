@@ -89,38 +89,6 @@ public class ClassUtil {
 		String  quilified=FileParseUtil.parsePropertyFile("config.properties").getProperty("targetPackage")+"."+simple;
 		return quilified;
 	}
-	/**
-	 * 获取指定包目录下的Class集合
-	 * @param targetPackage
-	 * @return
-	 */
-	public static List<Class> getClassListByPackage(String path) {
-		// TODO Auto-generated method stub
-		List<Class> list=new ArrayList<>();
-		Properties prop=GlobalParams.properties;
-		File directory=new File(path);
-		File[] files=directory.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				if(name.contains(".java")&&!name.contains("Mapper")) {
-					return true;
-				}
-				return false;
-			}
-		});
-		for(File file:files) {
-			String simpleName=file.getName().substring(0,file.getName().indexOf(".java"));
-			String qualifiedName=prop.get("targetPackage")+"."+simpleName;
-			try {
-				list.add(Class.forName(qualifiedName));
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		return list;
-	}
 	public static List<ClassName> getClassNameList(Properties prop) {
 		
 		List<TableInfo> list=TableUtil.getTables();
@@ -211,5 +179,14 @@ public class ClassUtil {
 		}
 		return getPrimaryKeyByClass(clazz);
 		
+	}
+	public static Class getClassByTableInfo(TableInfo tableInfo) {
+		String simpleName=getClassSimpleName(tableInfo.getTname());
+		try {
+			return Class.forName(GlobalParams.properties.getProperty("targetPackage")+"."+simpleName);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new  RuntimeException("找不到与表对应的Class");
+		}
 	}
 }

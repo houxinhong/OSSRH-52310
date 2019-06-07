@@ -63,11 +63,8 @@ public class TableUtil {
 	List<TableInfo> list=getTables();
 	for(TableInfo tableInfo:list) {
 		Properties properties=GlobalParams.properties;
-		List<Class> classes=ClassUtil.getClassListByPackage(properties.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(properties.getProperty("targetPackage")));
-		for(Class clazz:classes) {
-			if(TableUtil.getTableNameByClass(clazz).equals(tableInfo.getTname()))
-				map.put(clazz,tableInfo);
-		}
+		Class clazz=ClassUtil.getClassByTableInfo(tableInfo);
+		map.put(clazz, tableInfo);
 	}
 	return map;
 		
