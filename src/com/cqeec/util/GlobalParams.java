@@ -9,8 +9,9 @@ import com.cqeec.bean.TableInfo;
 import com.squareup.javapoet.ClassName;
 
 public class GlobalParams {
+	public static String path="config.properties";
 	static{
-		properties=FileParseUtil.parsePropertyFile("config.properties");
+		properties=FileParseUtil.parsePropertyFile(path);
 		tableInfos=TableUtil.getTables();
 		ClassName2TableMap=ClassUtil.getClassName_tableInfoMap(GlobalParams.properties);
 	}

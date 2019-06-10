@@ -25,9 +25,11 @@ import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.ParameterizedTypeName;
 
 public class GenerateCodeUtil {
+	
+	
 	public static void main(String[] args) {
-		generateJavaFile("config.properties");
-		generateMapper("config.properties");
+		generateJavaFile("configtest.properties");
+		generateMapper("configtest.properties");
 	}
 	
 	
@@ -35,9 +37,10 @@ public class GenerateCodeUtil {
 	 * 生成映射器
 	 */
 	public static void generateMapper(String path) {
+		  GlobalParams.path=path;
 		  //之前获取class会去包中去找相应的java文件（所以执行该方法之前会必须有java实体类）
 		  //为了解耦----这里这样是改变了---通过拼接字符串得到相应的ClassName对象
-		  Properties prop=GlobalParams.properties;
+		  Properties prop=FileParseUtil.parsePropertyFile(path);
 		  List<ClassName> list=ClassUtil.getClassNameList(prop);
 		  //如果没有的话则生存对应的包
 		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
@@ -446,7 +449,7 @@ public class GenerateCodeUtil {
 		             conditionTypeBuilder.addField(params);
 		             conditionTypeBuilder.addField(cache);
 	             //work 需要便利的方法
-	                TableInfo tableInfo=GlobalParams.ClassName2TableMap.get(clazz);
+	                TableInfo tableInfo=ClassUtil.getClassName_tableInfoMap(prop).get(clazz);
 	                List<ColumnInfo> columnInfos=tableInfo.getCloumnInfoList();
 	             for(ColumnInfo columnInfo:columnInfos) {
 	            	 String columnName=columnInfo.getName();
@@ -599,8 +602,9 @@ public class GenerateCodeUtil {
 	/**
 	 * 生成java文件
 	 */
-	public static void generateJavaFile(String configPath){
-		  Properties prop=GlobalParams.properties;
+	public static void generateJavaFile(String path){
+		GlobalParams.path=path;
+		  Properties prop=FileParseUtil.parsePropertyFile(path);
 		//如果没有的话则生存对应的包
 		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
 		  if(!directory.exists()) {
@@ -672,8 +676,8 @@ public class GenerateCodeUtil {
 				.addFields(fields)
 				.addModifiers(Modifier.PUBLIC).build();
 				//生成对应的java文件
-				String targetPackage=FileParseUtil.parsePropertyFile(configPath).getProperty("targetPackage");
-				String targetProject=FileParseUtil.parsePropertyFile(configPath).getProperty("targetProject");
+				String targetPackage=FileParseUtil.parsePropertyFile(path).getProperty("targetPackage");
+				String targetProject=FileParseUtil.parsePropertyFile(path).getProperty("targetProject");
 				JavaFile javaFile=JavaFile.builder(targetPackage, type).build();
 				//将java类输出到指定目录 
 				try {
