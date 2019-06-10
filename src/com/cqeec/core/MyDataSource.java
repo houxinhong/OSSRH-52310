@@ -4,14 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import com.cqeec.util.GlobalParams;
 
 public class MyDataSource {
+	private Properties myProperties=GlobalParams.getProperties();
 	private LinkedList<Connection> dataSources=new LinkedList<Connection>();
 	public MyDataSource() {
 		try {
-			Class.forName(GlobalParams.properties.getProperty("driver"));
+			Class.forName(myProperties.getProperty("driver"));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -22,7 +24,7 @@ public class MyDataSource {
 		try {
 			for (int i = 0; i < 10; i++) {
 				Connection con;
-				con = DriverManager.getConnection(GlobalParams.properties.getProperty("url"),GlobalParams.properties.getProperty("username") ,GlobalParams.properties.getProperty("password"));
+				con = DriverManager.getConnection(myProperties.getProperty("url"),myProperties.getProperty("username") ,myProperties.getProperty("password"));
 				dataSources.add(con); 
 				} 
 			 } 

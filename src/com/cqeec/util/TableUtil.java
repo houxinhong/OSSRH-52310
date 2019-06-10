@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.cqeec.annotation.Column;
 import com.cqeec.annotation.Table;
@@ -58,14 +59,29 @@ public class TableUtil {
 		}
 		return list;
 	}
+	@Deprecated
 	public static Map<Class ,TableInfo > getTableInfoMap() {
-     Map<Class, TableInfo> map=new HashMap<>();
-	List<TableInfo> list=getTables();
-	for(TableInfo tableInfo:list) {
+	 //这种写法无法进行表与类之间通过注解的形式进行映射，会调用Classfrom()方法，去加载一个可能不存在的Class
+		
+     /*Map<Class, TableInfo> map=new HashMap<>();
+	 List<TableInfo> list=getTables();
+	 for(TableInfo tableInfo:list) {
 		Properties properties=GlobalParams.properties;
 		Class clazz=ClassUtil.getClassByTableInfo(tableInfo);
 		map.put(clazz, tableInfo);
-	}
+	 }*/
+		
+	 Map<Class, TableInfo> map=new HashMap<>();
+	 Set<Class<?>> set=ClassUtil.getClasses(GlobalParams.getProperties().getProperty("targetPackage"));
+	 List<TableInfo> list=getTables();
+	 for(TableInfo tableInfo:list) {
+		for(Class<?> clazz:set) {
+			String tableName=getTableNameByClass(clazz);
+			if(tableInfo.getTname().equals(tableName)) {
+				map.put(clazz, tableInfo);
+			}
+		}
+	 }
 	return map;
 		
 	}

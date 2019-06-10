@@ -1,4 +1,7 @@
 package com.cqeec.core;
+
+import java.util.Date;
+
 /**
  * mysql数据类型和java数据类型的转换
  * @author gaoqi
@@ -26,6 +29,10 @@ public class MySqlTypeConvertor {
 		//double-->Double
 		if("double".equalsIgnoreCase(columnType)||"float".equalsIgnoreCase(columnType)){
 			return Double.class;
+		}
+		//datetime-->
+		if("datetime".equalsIgnoreCase(columnType)||"date".equalsIgnoreCase(columnType)||"time".equalsIgnoreCase(columnType)){
+			return Date.class;
 		}
 		return null;
 	}

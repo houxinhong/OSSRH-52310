@@ -24,7 +24,7 @@ public class DBUtil {
 	private static Configuration conf;
 	//加载配置文件
 	private static void  loadProperties(){  //静态代码块
-		Properties pros = GlobalParams.properties;
+		Properties pros = GlobalParams.getProperties();
 		conf = new Configuration();
 		conf.setDriver(pros.getProperty("driver"));
 		conf.setTargetPackage(pros.getProperty("targetPackage"));
@@ -67,7 +67,7 @@ public class DBUtil {
 	//对外提供使用获取连接释放连接的方法
 	public static Connection getConn() {
 		//根据是否使用连接池进行对象的获取
-		if("mydatasource".equals(GlobalParams.properties.getProperty("datasource"))) {
+		if("mydatasource".equals(GlobalParams.getProperties().getProperty("datasource"))) {
 			if(userConnection.get(Thread.currentThread())!=null) {
 				return userConnection.get(Thread.currentThread());
 			}else {
@@ -97,9 +97,10 @@ public class DBUtil {
 	
 	public static void close() {
 		//根据是否使用连接池进行对象的获取
-		if(GlobalParams.properties.getProperty("datasource").equals("mydatasource")) {
+		if(GlobalParams.getProperties().getProperty("datasource").equals("mydatasource")) {
 			if(userConnection.get(Thread.currentThread())!=null) {
-				dataSource.releaseConnection(userConnection.get(Thread.currentThread()));
+				//userConnection删除对应的连接,数据源回收对应连接
+				dataSource.releaseConnection(userConnection.remove(Thread.currentThread()));
 			}
 		}
 		//其他连接池

@@ -38,9 +38,10 @@ public class GenerateCodeUtil {
 	 * 生成映射器
 	 */
 	public static void generateMapper(String path) {
+		  GlobalParams.setPath(path);
 		  //之前获取class会去包中去找相应的java文件（所以执行该方法之前会必须有java实体类）
 		  //为了解耦----这里这样是改变了---通过拼接字符串得到相应的ClassName对象
-		  Properties prop=FileParseUtil.parsePropertyFile(path);
+		  Properties prop=GlobalParams.getProperties();
 		  List<ClassName> list=ClassUtil.getClassNameList(prop);
 		  //如果没有的话则生存对应的包
 		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
@@ -586,7 +587,7 @@ public class GenerateCodeUtil {
 	     //work 填充进类中        
 	     typeTemp.addMethods(methodSpecs);        
 	     typeTemp.addType(conditionTypeBuilder.build());
-	     if(GlobalParams.properties.getProperty("enableDaoAnnotation")!=null&&GlobalParams.properties.getProperty("enableDaoAnnotation").equals("true")) {
+	     if(GlobalParams.getProperties().getProperty("enableDaoAnnotation")!=null&&GlobalParams.getProperties().getProperty("enableDaoAnnotation").equals("true")) {
 	    	 typeTemp.addAnnotation(ClassName.get("org.springframework.stereotype","Repository"));
 	     }
 	     JavaFile javaFile=JavaFile.builder(prop.getProperty("targetPackage"), typeTemp.build()).build();
@@ -605,7 +606,8 @@ public class GenerateCodeUtil {
 	 * 生成java文件
 	 */
 	public static void generateJavaFile(String path){
-		  Properties prop=FileParseUtil.parsePropertyFile(path);
+		  GlobalParams.setPath(path);
+		  Properties prop=GlobalParams.getProperties();
 		//如果没有的话则生存对应的包
 		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
 		  if(!directory.exists()) {

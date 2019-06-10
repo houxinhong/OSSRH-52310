@@ -65,8 +65,8 @@ public class ColumnUtil {
 		Id id=null;
 		Column column=null;
 		try {
-			id = clazz.getField(fieldName).getDeclaredAnnotation(Id.class);
-			 column=clazz.getField(fieldName).getDeclaredAnnotation(Column.class);
+			id = clazz.getDeclaredField(fieldName).getDeclaredAnnotation(Id.class);
+			 column=clazz.getDeclaredField(fieldName).getDeclaredAnnotation(Column.class);
 		} catch (NoSuchFieldException | SecurityException e) {
 			e.printStackTrace();
 		}

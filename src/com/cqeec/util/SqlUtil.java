@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +108,7 @@ public class SqlUtil {
 	
 	
 	public static void modify(String sql,Object... params) {
-		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+		if(GlobalParams.getProperties().get("isShowSql").equals("true")) {
 			System.out.println(sql);
 		}
 		try {
@@ -149,7 +151,7 @@ public class SqlUtil {
 	}
 
 	public static List<Object> select(String sql,Class clazz,Object... params) {
-		if(GlobalParams.properties.get("isShowSql").equals("true")) {
+		if(GlobalParams.getProperties().get("isShowSql").equals("true")) {
 			System.out.println(sql);
 		}
 		try {
@@ -175,7 +177,10 @@ public class SqlUtil {
 		}
 	}
 	
+	
+	
 	/**
+	 * 行映射器
 	 * 将mysql数据转换为java对象
 	 * @param rs
 	 * @param clazz
@@ -183,13 +188,43 @@ public class SqlUtil {
 	 */
 	private static Object mysqlData2Java(ResultSet rs,Class clazz) {
 		Field[] fields=clazz.getDeclaredFields();
-		Method[] methods=clazz.getDeclaredMethods();
-		if(GlobalParams.tableInfosMap==null) {
-			GlobalParams.tableInfosMap=TableUtil.getTableInfoMap();
-		}
-		TableInfo tableInfo=GlobalParams.tableInfosMap.get(clazz);
-		Map<String, ColumnInfo> columns=tableInfo.getColumns();
 		Object obj=null;
+	try {
+		obj=clazz.newInstance();
+		ResultSetMetaData metaData=rs.getMetaData();
+		int columnCount=metaData.getColumnCount();
+		for(int i=1;i<=columnCount;i++) {
+			String columnName=metaData.getColumnName(i);
+			String columnType=metaData.getColumnTypeName(i);
+			Class paramType=MySqlTypeConvertor.databaseType2JavaType(columnType);
+			for(Field field:fields) {
+				//获取字段名称(有注解就用注解上的)
+				String columnNameAnno=ColumnUtil.getColumnName(clazz, field.getName());
+				if(columnName.equals(columnNameAnno)) {
+					//根据字段名称获取到相应的set方法
+					Method method=clazz.getDeclaredMethod("set"+ClassUtil.getClassSimpleName(field.getName()), paramType);
+					method.invoke(obj, rs.getObject(columnName));
+				}
+			}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	 }
+	return obj;
+	}
+	//==========================================
+	//之前的mysqlData2Java方法代码冗余，更新之后是上面的样子//
+	//==========================================
+	/*
+	 private static Object mysqlData2Java(ResultSet rs,Class clazz) {
+	 	Field[] fields=clazz.getDeclaredFields();
+	Method[] methods=clazz.getDeclaredMethods();
+	if(GlobalParams.tableInfosMap==null) {
+		GlobalParams.tableInfosMap=TableUtil.getTableInfoMap();
+	}
+	TableInfo tableInfo=GlobalParams.tableInfosMap.get(clazz);
+	Map<String, ColumnInfo> columns=tableInfo.getColumns();
+	Object obj=null;
 	try {
 		obj=clazz.newInstance();
 		for(Field field:fields) {
@@ -223,12 +258,10 @@ public class SqlUtil {
 		}
 	} catch (Exception e) {
 		e.printStackTrace();
-	 }
+	}
 	return obj;
 	}
-	
-	
-	
+*/	
 	
 	
 	

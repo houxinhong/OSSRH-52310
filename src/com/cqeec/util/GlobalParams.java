@@ -8,19 +8,37 @@ import java.util.Properties;
 import com.cqeec.bean.TableInfo;
 import com.squareup.javapoet.ClassName;
 
+/**
+ * 懒汉设计模式彻底解决配置文件不能随意配置问题！！！！！！！！！！！！！！！！！！！！！
+ * @author Administrator
+ *
+ */
 public class GlobalParams {
-	static{
-		properties=FileParseUtil.parsePropertyFile("config.properties");
-		tableInfos=TableUtil.getTables();
-		ClassName2TableMap=ClassUtil.getClassName_tableInfoMap(GlobalParams.properties);
-	}
-	//全部表信息
-   public static List<TableInfo> tableInfos; 
-   //
-   public static Map<ClassName, TableInfo> ClassName2TableMap;
-   //全部表信息的Map集合key-->Class Value-->TableInfo	 需要java类才能获取class对象，这里就不一开始初始化
-   public static Map<Class, TableInfo> tableInfosMap;
+	private static String path="config.properties";
+   //全部表信息的Map集合key-->ClassName Value-->TableInfo	
+   private static Map<ClassName, TableInfo> ClassName2TableMap;
    //配置文件
-   public static Properties properties; 
+   private static Properties properties; 
+   @Deprecated
+   //全部表信息  --->似乎没用到
+   private static List<TableInfo> tableInfos; //TableUtil.getTables()
+   @Deprecated
+   //全部表信息的Map集合key-->Class Value-->TableInfo	 需要java类才能获取class对象，这里就不一开始初始化
+   //改进代码后用不到这里了
+   private static Map<Class, TableInfo> tableInfosMap; //TableUtil.getTableInfoMap()
+   
+   
+   
+	
+	public static void setPath(String path) {
+	   GlobalParams.path = path;
+    }
+	public static Map<ClassName, TableInfo> getClassName2TableMap() {
+		return ClassName2TableMap==null?ClassUtil.getClassName_tableInfoMap(getProperties()):ClassName2TableMap;
+	}
+	public static Properties getProperties() {
+		return properties==null?FileParseUtil.parsePropertyFile(path):properties;
+	}
+	
    
 }
