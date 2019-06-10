@@ -97,7 +97,7 @@ public class DBUtil {
 	
 	public static void close() {
 		//根据是否使用连接池进行对象的获取
-		if(GlobalParams.getProperties().getProperty("datasource").equals("mydatasource")) {
+		if("mydatasource".equals(GlobalParams.getProperties().getProperty("datasource"))) {
 			if(userConnection.get(Thread.currentThread())!=null) {
 				//userConnection删除对应的连接,数据源回收对应连接
 				dataSource.releaseConnection(userConnection.remove(Thread.currentThread()));
@@ -168,7 +168,7 @@ public class DBUtil {
 			try {
 				for(Object object:objs) {
 					if(object!=null&&object instanceof PreparedStatement){
-						((ResultSet)object).close();
+						((PreparedStatement)object).close();
 					}
 				}
 			} catch (SQLException e) {
@@ -177,7 +177,7 @@ public class DBUtil {
 			try {
 				for(Object object:objs) {
 					if(object!=null&&object instanceof Connection){
-						((ResultSet)object).close();
+						((Connection)object).close();
 					}
 				}
 			} catch (SQLException e) {

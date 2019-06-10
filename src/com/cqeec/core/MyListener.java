@@ -1,14 +1,19 @@
 package com.cqeec.core;
+import java.util.Set;
+
+import javax.servlet.ServletContainerInitializer;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequestEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextStartedEvent;
 
 import javax.servlet.ServletRequestListener;
 
 import com.cqeec.util.DBUtil;
 import com.cqeec.util.GlobalParams;
 
-public class MyListener implements ServletRequestListener,ApplicationListener<ContextStartedEvent> {
+public class MyListener implements ServletRequestListener,ServletContextListener {
      @Override
      public void requestDestroyed(ServletRequestEvent sre) {
           DBUtil.close();
@@ -17,10 +22,9 @@ public class MyListener implements ServletRequestListener,ApplicationListener<Co
      public void requestInitialized(ServletRequestEvent sre) {
     	 
      }
-     @Override
- 	public void onApplicationEvent(ContextStartedEvent event) {
-          //这里设置配置文件的路径
-    	 GlobalParams.setPath("config.properties");
- 	}
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		GlobalParams.setPath("config.properties");
+	}
      
  }
