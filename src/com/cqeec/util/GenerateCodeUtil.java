@@ -15,6 +15,7 @@ import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.bean.TableInfo;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -28,8 +29,8 @@ public class GenerateCodeUtil {
 	
 	
 	public static void main(String[] args) {
-		generateJavaFile("configtest.properties");
-		generateMapper("configtest.properties");
+		generateJavaFile("config.properties");
+		generateMapper("config.properties");
 	}
 	
 	
@@ -37,7 +38,6 @@ public class GenerateCodeUtil {
 	 * 生成映射器
 	 */
 	public static void generateMapper(String path) {
-		  GlobalParams.path=path;
 		  //之前获取class会去包中去找相应的java文件（所以执行该方法之前会必须有java实体类）
 		  //为了解耦----这里这样是改变了---通过拼接字符串得到相应的ClassName对象
 		  Properties prop=FileParseUtil.parsePropertyFile(path);
@@ -586,7 +586,9 @@ public class GenerateCodeUtil {
 	     //work 填充进类中        
 	     typeTemp.addMethods(methodSpecs);        
 	     typeTemp.addType(conditionTypeBuilder.build());
-	     
+	     if(GlobalParams.properties.getProperty("enableDaoAnnotation")!=null&&GlobalParams.properties.getProperty("enableDaoAnnotation").equals("true")) {
+	    	 typeTemp.addAnnotation(ClassName.get("org.springframework.stereotype","Repository"));
+	     }
 	     JavaFile javaFile=JavaFile.builder(prop.getProperty("targetPackage"), typeTemp.build()).build();
 	     try {
 			javaFile.writeTo(new File(prop.getProperty("targetProject")));
@@ -603,7 +605,6 @@ public class GenerateCodeUtil {
 	 * 生成java文件
 	 */
 	public static void generateJavaFile(String path){
-		GlobalParams.path=path;
 		  Properties prop=FileParseUtil.parsePropertyFile(path);
 		//如果没有的话则生存对应的包
 		  File directory=new File(prop.getProperty("targetProject")+"\\"+StringUtil.spot2Slash(prop.getProperty("targetPackage")));
