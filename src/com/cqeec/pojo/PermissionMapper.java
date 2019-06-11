@@ -5,6 +5,7 @@ import com.cqeec.core.DBUtil;
 import com.cqeec.core.SqlUtil;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.FieldUtil;
 import com.cqeec.util.other.CollectionUtil;
 import com.cqeec.util.other.StringUtil;
 import java.lang.Deprecated;
@@ -13,6 +14,7 @@ import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +31,13 @@ public class PermissionMapper {
 
   public void insert(Permission permission) {
     String sql=SqlUtil.getInsertSql(permission.getClass());
-    Integer id=SqlUtil.save(sql,permission);
-    if(id!=null) {
-    	String pkFieldName=ClassUtil.getPrimaryKeyFieldName(permission.getClass());
-    	permission.getClass().getMethod("set"+ClassUtil.getClassSimpleName(pkFieldName), )
-    }
-  }
+    Object result=SqlUtil.save(sql,permission);
+    if(result!=null){String pkFieldName=ClassUtil.getPrimaryKeyFieldName(permission.getClass());
+            Field field=FieldUtil.getFieldByColumnName(permission.getClass(), pkFieldName);
+    	    Object id=null;
+    	    if(field.getType().equals(Integer.class))id=result;
+    	    if(field.getType().equals(Long.class))id=Long.valueOf(result.toString());
+            if(id!=null)ClassUtil.invokeSet(permission, pkFieldName, id); }}
 
   public void delete(Long primaryKey) {
     String sql=SqlUtil.getDeleteSql(Permission.class)+"where "+ClassUtil.getPrimaryKeyByClass(Permission.class)+"=?";
@@ -253,74 +256,6 @@ public class PermissionMapper {
 
     public Object[] generateParams() {
       return params.toArray();
-    }
-
-    public Condition andDateIsNull() {
-      return simplify("date"+" is null ",null);
-    }
-
-    public Condition andDateNotNull() {
-      return simplify("date"+" is not null ",null);
-    }
-
-    public Condition andDateEqualTo(Object val) {
-      return simplify("date"+" = ? ",new Object[]{val});
-    }
-
-    public Condition andDateNotEqualTo(Object val) {
-      return simplify("date"+" != ? ",new Object[]{val});
-    }
-
-    public Condition andDateGreaterThan(Object val) {
-      return simplify("date"+" > ? ", new Object[]{val});
-    }
-
-    public Condition andDateGreaterThanOrEqualTo(Object val) {
-      return simplify( "date"+" >= ? ", new Object[]{val});
-    }
-
-    public Condition andDateLessThan(Object val) {
-      return simplify( "date"+" < ? ", new Object[]{val});
-    }
-
-    public Condition andDateLessThanOrEqualTo(Object val) {
-       return simplify("date"+" <= ? ", new Object[]{val});
-    }
-
-    public Condition andDateLike(Object val) {
-      return simplify( "date"+" like ? ", new Object[]{val});
-    }
-
-    public Condition andDateNotLike(Object val) {
-      return simplify( "date"+" not like ? ", new Object[]{val});
-    }
-
-    public Condition andDateIn(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify("date"+" in ("+sb.toString()+")",null);
-    }
-
-    public Condition andDateNotIn(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify("date"+" not in ("+sb.toString()+")",null);
-    }
-
-    public Condition andDateBetweenTo(Object start, Object end) {
-      return simplify("date"+" between ? and ?",new Object[]{start,end});
-    }
-
-    public Condition andDateNotBetweenTo(Object start, Object end) {
-      return simplify("date"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameIsNull() {

@@ -2,6 +2,7 @@ package com.cqeec.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.cqeec.core.SqlUtil;
 import com.cqeec.pojo.Permission;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.FieldUtil;
 import com.cqeec.util.core.TableUtil;
 import com.cqeec.util.other.CollectionUtil;
 import com.cqeec.util.other.FileParseUtil;
@@ -97,11 +99,15 @@ public class GenerateCodeUtil {
 	        		  returns(void.class).
 	        		  addParameter(clazz,firstLowerClassName).
 	        		  addStatement("String sql=$T.getInsertSql($L.getClass())",SqlUtil.class,firstLowerClassName).
-	        		  addStatement("$T.save(sql,$L)",SqlUtil.class,firstLowerClassName).
-	        		  addStatement("Integer id=SqlUtil.save(sql,$L)",firstLowerClassName).
-	        		  addCode(" if(id!=null) {\r\n" + 
-	        		  		"    	ClassUtil.getPrimaryKeyByClass(Permission.class)\r\n" + 
-	        		  		"    }").
+	        		  addStatement("Object result=$T.save(sql,$L)",SqlUtil.class,firstLowerClassName).
+	        		  addCode("if(result!=null){"
+	        		  		+ "String pkFieldName=ClassUtil.getPrimaryKeyFieldName($L.getClass());\r\n" + 
+	        		  		"        $T field=$T.getFieldByColumnName($L.getClass(), pkFieldName);\r\n" + 
+	        		  		"	    Object id=null;\r\n" + 
+	        		  		"	    if(field.getType().equals(Integer.class))id=result;\r\n" + 
+	        		  		"	    if(field.getType().equals(Long.class))id=Long.valueOf(result.toString());\r\n" + 
+	        		  		"        if(id!=null)ClassUtil.invokeSet($L, pkFieldName, id); "
+	        		  		+ "}",firstLowerClassName,Field.class,FieldUtil.class,firstLowerClassName,firstLowerClassName).
 	        		  build();
 	          methodSpecs.add(insert);
 	          MethodSpec delete=MethodSpec.methodBuilder("delete").

@@ -5,14 +5,15 @@ import com.cqeec.core.DBUtil;
 import com.cqeec.core.SqlUtil;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.FieldUtil;
 import com.cqeec.util.other.CollectionUtil;
 import com.cqeec.util.other.StringUtil;
 import java.lang.Deprecated;
 import java.lang.Integer;
-import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,10 +30,15 @@ public class RoleMapper {
 
   public void insert(Role role) {
     String sql=SqlUtil.getInsertSql(role.getClass());
-    SqlUtil.save(sql,role);
-  }
+    Object result=SqlUtil.save(sql,role);
+    if(result!=null){String pkFieldName=ClassUtil.getPrimaryKeyFieldName(role.getClass());
+            Field field=FieldUtil.getFieldByColumnName(role.getClass(), pkFieldName);
+    	    Object id=null;
+    	    if(field.getType().equals(Integer.class))id=result;
+    	    if(field.getType().equals(Long.class))id=Long.valueOf(result.toString());
+            if(id!=null)ClassUtil.invokeSet(role, pkFieldName, id); }}
 
-  public void delete(Long primaryKey) {
+  public void delete(Integer primaryKey) {
     String sql=SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?";
     SqlUtil.delete(sql,primaryKey);
   }
@@ -42,7 +48,7 @@ public class RoleMapper {
     SqlUtil.modify(sql,CollectionUtil.sortByUpdate(role));
   }
 
-  public Role select(Long primaryKey) {
+  public Role select(Integer primaryKey) {
     String sql=SqlUtil.getSelectSql(Role.class, "where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?");
     List<Object> temp=SqlUtil.select(sql,Role.class,primaryKey);
     return temp!=null&&temp.size()!=0?(Role)temp.get(0):null;
@@ -54,14 +60,14 @@ public class RoleMapper {
     }
   }
 
-  public void batchDelete(Long[] primaryKeys) {
-    for(Long primaryKey:primaryKeys) {
+  public void batchDelete(Integer[] primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
 
-  public void batchDelete(List<Long> primaryKeys) {
-    for(Long primaryKey:primaryKeys) {
+  public void batchDelete(List<Integer> primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       delete(primaryKey);
     }
   }
@@ -72,17 +78,17 @@ public class RoleMapper {
     }
   }
 
-  public List<Role> batchSelect(Long[] primaryKeys) {
+  public List<Role> batchSelect(Integer[] primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Long primaryKey:primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
   }
 
-  public List<Role> batchSelect(List<Long> primaryKeys) {
+  public List<Role> batchSelect(List<Integer> primaryKeys) {
     List<Role> roles=new ArrayList<>();
-    for(Long primaryKey:primaryKeys) {
+    for(Integer primaryKey:primaryKeys) {
       roles.add(select(primaryKey));
     }
     return roles;
@@ -91,7 +97,7 @@ public class RoleMapper {
   public void deleteByCondition(Condition condition) {
     List<Role> list=selectByCondition(condition);
     for(Role role:list)  {
-      delete((Long)ColumnUtil.callPKGetMethod(role));
+      delete((Integer)ColumnUtil.callPKGetMethod(role));
     }
   }
 
@@ -140,7 +146,7 @@ public class RoleMapper {
     sql+=" where "+arrStr[1];
     List<Object> list=SqlUtil.select(sql,Role.class, params);
     for(Object object:list) {
-      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?", (Long)ColumnUtil.callPKGetMethod(object));
+      SqlUtil.delete(SqlUtil.getDeleteSql(Role.class)+"where "+ClassUtil.getPrimaryKeyByClass(Role.class)+"=?", (Integer)ColumnUtil.callPKGetMethod(object));
     }
   }
 
@@ -249,74 +255,6 @@ public class RoleMapper {
 
     public Object[] generateParams() {
       return params.toArray();
-    }
-
-    public Condition andSdDasdIsNull() {
-      return simplify("sd_dasd"+" is null ",null);
-    }
-
-    public Condition andSdDasdNotNull() {
-      return simplify("sd_dasd"+" is not null ",null);
-    }
-
-    public Condition andSdDasdEqualTo(Object val) {
-      return simplify("sd_dasd"+" = ? ",new Object[]{val});
-    }
-
-    public Condition andSdDasdNotEqualTo(Object val) {
-      return simplify("sd_dasd"+" != ? ",new Object[]{val});
-    }
-
-    public Condition andSdDasdGreaterThan(Object val) {
-      return simplify("sd_dasd"+" > ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdGreaterThanOrEqualTo(Object val) {
-      return simplify( "sd_dasd"+" >= ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdLessThan(Object val) {
-      return simplify( "sd_dasd"+" < ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdLessThanOrEqualTo(Object val) {
-       return simplify("sd_dasd"+" <= ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdLike(Object val) {
-      return simplify( "sd_dasd"+" like ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdNotLike(Object val) {
-      return simplify( "sd_dasd"+" not like ? ", new Object[]{val});
-    }
-
-    public Condition andSdDasdIn(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify("sd_dasd"+" in ("+sb.toString()+")",null);
-    }
-
-    public Condition andSdDasdNotIn(List<Object> list) {
-      this.params.addAll(list);
-      StringBuffer sb=new StringBuffer();
-      for(Object object:list) {
-        sb.append("?,");
-      }
-      StringUtil.clearEndChar(sb);
-      return simplify("sd_dasd"+" not in ("+sb.toString()+")",null);
-    }
-
-    public Condition andSdDasdBetweenTo(Object start, Object end) {
-      return simplify("sd_dasd"+" between ? and ?",new Object[]{start,end});
-    }
-
-    public Condition andSdDasdNotBetweenTo(Object start, Object end) {
-      return simplify("sd_dasd"+" not between ? and ?",new Object[]{start,end});
     }
 
     public Condition andNameIsNull() {

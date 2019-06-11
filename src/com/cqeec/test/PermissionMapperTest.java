@@ -27,31 +27,31 @@ public class PermissionMapperTest {
 
 	@Test
 	public void insert() {
-		Permission permission=new Permission(new Date(),"test",null, "1111","/dddd");
-	    mapper.insert(permission);		
+		Permission permission=new Permission("test",null, "1111","/dddd");
+	    mapper.insert(permission);	
 	    System.out.println(permission);
 	}
 
 	@Test
 	public void delete() {
-		mapper.delete(16L);
+		mapper.delete(45L);
 	}
 
 	@Test
 	public void update() {
-		Permission permission=mapper.select(6L);
+		Permission permission=mapper.select(44L);
 		permission.setName("111661111222222");
 		mapper.update(permission);
 	}
 
 	@Test
 	public void select() {
-		System.out.println(mapper.select(6L));
+		System.out.println(mapper.select(44L));
 	}
 	
 	@Test
 	public void deleteByCondition() {
-		Condition condition=mapper.createCondtion().andIdEqualTo(15);
+		Condition condition=mapper.createCondtion().andIdEqualTo(44);
 		mapper.deleteByCondition(condition);
 	}
     

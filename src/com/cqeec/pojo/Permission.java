@@ -3,13 +3,11 @@ package com.cqeec.pojo;
 import java.lang.Long;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Date;
+
 
 import com.cqeec.annotation.Id;
 
 public class Permission {
-  private Date date;
-
   private String name;
 
   @Id(value="id",auto_increment=true)
@@ -19,8 +17,7 @@ public class Permission {
 
   private String url;
 
-  public Permission(Date date, String name, Long id, String desc_, String url) {
-    this.date=date;
+  public Permission(String name, Long id, String desc_, String url) {
     this.name=name;
     this.id=id;
     this.desc_=desc_;
@@ -28,14 +25,6 @@ public class Permission {
   }
 
   public Permission() {
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(Date date) {
-    this.date=date;
   }
 
   public String getName() {
@@ -72,6 +61,6 @@ public class Permission {
 
   @Override
   public String toString() {
-    return "["+"date"+"="+this.date+","+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
+    return "["+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
   }
 }

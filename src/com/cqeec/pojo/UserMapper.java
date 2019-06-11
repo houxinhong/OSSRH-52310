@@ -5,6 +5,7 @@ import com.cqeec.core.DBUtil;
 import com.cqeec.core.SqlUtil;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.FieldUtil;
 import com.cqeec.util.other.CollectionUtil;
 import com.cqeec.util.other.StringUtil;
 import java.lang.Deprecated;
@@ -13,6 +14,7 @@ import java.lang.Long;
 import java.lang.Object;
 import java.lang.String;
 import java.lang.StringBuffer;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,13 @@ public class UserMapper {
 
   public void insert(User user) {
     String sql=SqlUtil.getInsertSql(user.getClass());
-    SqlUtil.save(sql,user);
-  }
+    Object result=SqlUtil.save(sql,user);
+    if(result!=null){String pkFieldName=ClassUtil.getPrimaryKeyFieldName(user.getClass());
+            Field field=FieldUtil.getFieldByColumnName(user.getClass(), pkFieldName);
+    	    Object id=null;
+    	    if(field.getType().equals(Integer.class))id=result;
+    	    if(field.getType().equals(Long.class))id=Long.valueOf(result.toString());
+            if(id!=null)ClassUtil.invokeSet(user, pkFieldName, id); }}
 
   public void delete(Long primaryKey) {
     String sql=SqlUtil.getDeleteSql(User.class)+"where "+ClassUtil.getPrimaryKeyByClass(User.class)+"=?";
