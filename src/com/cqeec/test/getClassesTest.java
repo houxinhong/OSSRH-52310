@@ -2,7 +2,7 @@ package com.cqeec.test;
 
 import org.junit.Test;
 
-import com.cqeec.util.ClassUtil;
+import com.cqeec.util.core.ClassUtil;
 
 public class getClassesTest {
 

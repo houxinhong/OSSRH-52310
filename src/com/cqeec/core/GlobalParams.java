@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.core;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.cqeec.bean.TableInfo;
+import com.cqeec.util.core.ClassUtil;
+import com.cqeec.util.other.FileParseUtil;
 import com.squareup.javapoet.ClassName;
 
 /**
- * 懒汉设计模式彻底解决配置文件不能随意配置问题！！！！！！！！！！！！！！！！！！！！！
+ * 懒汉设计模式彻底解决配置文件不能随意配置名称与路径问题！！！！！！！！！！！！！！！！！！！！！
  * @author Administrator
  *
  */
@@ -20,7 +22,7 @@ public class GlobalParams {
    //配置文件
    private static Properties properties; 
    @Deprecated
-   //全部表信息  --->似乎没用到
+   //全部表信息  --->没用到
    private static List<TableInfo> tableInfos; //TableUtil.getTables()
    @Deprecated
    //全部表信息的Map集合key-->Class Value-->TableInfo	 需要java类才能获取class对象，这里就不一开始初始化

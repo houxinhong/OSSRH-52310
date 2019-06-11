@@ -14,7 +14,16 @@ import javax.lang.model.element.Modifier;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.PageInfo;
 import com.cqeec.bean.TableInfo;
+import com.cqeec.core.DBUtil;
+import com.cqeec.core.GlobalParams;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.cqeec.core.SqlUtil;
+import com.cqeec.util.core.ClassUtil;
+import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.TableUtil;
+import com.cqeec.util.other.CollectionUtil;
+import com.cqeec.util.other.FileParseUtil;
+import com.cqeec.util.other.StringUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -29,8 +38,8 @@ public class GenerateCodeUtil {
 	
 	
 	public static void main(String[] args) {
-		generateJavaFile("config.properties");
-		generateMapper("config.properties");
+		generateJavaFile("sample_config.properties");
+		generateMapper("sample_config.properties");
 	}
 	
 	

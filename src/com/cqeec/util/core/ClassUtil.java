@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.util.core;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -23,7 +23,10 @@ import java.util.jar.JarFile;
 import com.cqeec.annotation.Id;
 import com.cqeec.annotation.Table;
 import com.cqeec.bean.TableInfo;
+import com.cqeec.core.GlobalParams;
 import com.cqeec.core.MySqlTypeConvertor;
+import com.cqeec.util.other.FileParseUtil;
+import com.cqeec.util.other.StringUtil;
 import com.squareup.javapoet.ClassName;
 
 

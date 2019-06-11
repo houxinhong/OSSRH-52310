@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.util.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 import com.cqeec.annotation.Column;
 import com.cqeec.annotation.Id;
+import com.cqeec.util.other.StringUtil;
 
 public class ColumnUtil {
 

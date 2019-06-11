@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.util.other;
 
 import java.io.IOException;
 import java.io.InputStream;

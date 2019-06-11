@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.cqeec.bean.Configuration;
-import com.cqeec.core.MyDataSource;
 
 
 public class DBUtil {

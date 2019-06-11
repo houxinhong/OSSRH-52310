@@ -34,7 +34,7 @@ public class MySqlTypeConvertor {
 		if("datetime".equalsIgnoreCase(columnType)||"date".equalsIgnoreCase(columnType)||"time".equalsIgnoreCase(columnType)){
 			return Date.class;
 		}
-		return null;
+		throw new RuntimeException("表字段类型找不到匹配的java类型");
 	}
 
 	public static String javaType2DatabaseType(String javaDataType) {

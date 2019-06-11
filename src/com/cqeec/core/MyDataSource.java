@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Properties;
 
-import com.cqeec.util.GlobalParams;
-
 public class MyDataSource {
 	private Properties myProperties=GlobalParams.getProperties();
 	private LinkedList<Connection> dataSources=new LinkedList<Connection>();

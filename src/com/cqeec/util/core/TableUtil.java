@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.util.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -16,6 +16,9 @@ import com.cqeec.annotation.Column;
 import com.cqeec.annotation.Table;
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
+import com.cqeec.core.DBUtil;
+import com.cqeec.core.GlobalParams;
+import com.cqeec.util.other.StringUtil;
 
 public class TableUtil {
 	

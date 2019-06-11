@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import com.cqeec.util.DBUtil;
+import com.cqeec.core.DBUtil;
 public class JDBCTest {
 
 	@Test

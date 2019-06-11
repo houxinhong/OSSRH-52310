@@ -10,9 +10,6 @@ import javax.servlet.ServletRequestEvent;
 
 import javax.servlet.ServletRequestListener;
 
-import com.cqeec.util.DBUtil;
-import com.cqeec.util.GlobalParams;
-
 public class MyListener implements ServletRequestListener,ServletContextListener {
      @Override
      public void requestDestroyed(ServletRequestEvent sre) {

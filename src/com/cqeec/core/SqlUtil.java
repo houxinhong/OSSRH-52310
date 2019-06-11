@@ -1,4 +1,4 @@
-package com.cqeec.util;
+package com.cqeec.core;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -13,7 +13,11 @@ import java.util.Map;
 
 import com.cqeec.bean.ColumnInfo;
 import com.cqeec.bean.TableInfo;
-import com.cqeec.core.MySqlTypeConvertor;
+import com.cqeec.util.core.ClassUtil;
+import com.cqeec.util.core.ColumnUtil;
+import com.cqeec.util.core.FieldUtil;
+import com.cqeec.util.core.TableUtil;
+import com.cqeec.util.other.StringUtil;
 import com.squareup.javapoet.ClassName;
 
 
@@ -108,7 +112,7 @@ public class SqlUtil {
 	
 	
 	public static void modify(String sql,Object... params) {
-		if(GlobalParams.getProperties().get("isShowSql").equals("true")) {
+		if("true".equals(GlobalParams.getProperties().get("isShowSql"))) {
 			System.out.println(sql);
 		}
 		try {
@@ -187,7 +191,6 @@ public class SqlUtil {
 	 * @return
 	 */
 	private static Object mysqlData2Java(ResultSet rs,Class clazz) {
-		Field[] fields=clazz.getDeclaredFields();
 		Object obj=null;
 	try {
 		obj=clazz.newInstance();
@@ -197,14 +200,13 @@ public class SqlUtil {
 			String columnName=metaData.getColumnName(i);
 			String columnType=metaData.getColumnTypeName(i);
 			Class paramType=MySqlTypeConvertor.databaseType2JavaType(columnType);
-			for(Field field:fields) {
-				//获取字段名称(有注解就用注解上的)
-				String columnNameAnno=ColumnUtil.getColumnName(clazz, field.getName());
-				if(columnName.equals(columnNameAnno)) {
-					//根据字段名称获取到相应的set方法
-					Method method=clazz.getDeclaredMethod("set"+ClassUtil.getClassSimpleName(field.getName()), paramType);
-					method.invoke(obj, rs.getObject(columnName));
-				}
+		   Field field=FieldUtil.getFieldByColumnName(clazz, columnName);
+			//获取字段名称(有注解就用注解上的)
+			String columnNameAnno=ColumnUtil.getColumnName(clazz, field.getName());
+			if(columnName.equals(columnNameAnno)) {
+				//根据字段名称获取到相应的set方法
+				Method method=clazz.getDeclaredMethod("set"+ClassUtil.getClassSimpleName(field.getName()), paramType);
+				method.invoke(obj, rs.getObject(columnName));
 			}
 		}
 	} catch (Exception e) {

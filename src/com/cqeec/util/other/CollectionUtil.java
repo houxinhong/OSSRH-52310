@@ -1,10 +1,12 @@
-package com.cqeec.util;
+package com.cqeec.util.other;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cqeec.util.core.ClassUtil;
+import com.cqeec.util.core.ColumnUtil;
 import com.squareup.javapoet.ClassName;
 
 
