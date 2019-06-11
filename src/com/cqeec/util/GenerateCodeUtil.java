@@ -40,11 +40,19 @@ public class GenerateCodeUtil {
 	
 	
 	public static void main(String[] args) {
-		generateJavaFile("sample_config.properties");
-		generateMapper("sample_config.properties");
+		generateDefaultJavaFile();
 	}
 	
 	
+	
+	public static void generateDefaultJavaFile() {
+		generateJavaFile("config.properties");
+		generateMapper("config.properties");
+	}
+	public static void generateDefaultJavaFile(String path) {
+		generateJavaFile(path);
+		generateMapper(path);
+	}
 	/**
 	 * 生成映射器
 	 */
