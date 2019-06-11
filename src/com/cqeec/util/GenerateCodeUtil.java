@@ -19,7 +19,6 @@ import com.cqeec.core.DBUtil;
 import com.cqeec.core.GlobalParams;
 import com.cqeec.core.MySqlTypeConvertor;
 import com.cqeec.core.SqlUtil;
-import com.cqeec.pojo.Permission;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
 import com.cqeec.util.core.FieldUtil;
