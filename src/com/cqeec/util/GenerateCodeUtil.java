@@ -18,6 +18,7 @@ import com.cqeec.core.DBUtil;
 import com.cqeec.core.GlobalParams;
 import com.cqeec.core.MySqlTypeConvertor;
 import com.cqeec.core.SqlUtil;
+import com.cqeec.pojo.Permission;
 import com.cqeec.util.core.ClassUtil;
 import com.cqeec.util.core.ColumnUtil;
 import com.cqeec.util.core.TableUtil;
@@ -97,6 +98,10 @@ public class GenerateCodeUtil {
 	        		  addParameter(clazz,firstLowerClassName).
 	        		  addStatement("String sql=$T.getInsertSql($L.getClass())",SqlUtil.class,firstLowerClassName).
 	        		  addStatement("$T.save(sql,$L)",SqlUtil.class,firstLowerClassName).
+	        		  addStatement("Integer id=SqlUtil.save(sql,$L)",firstLowerClassName).
+	        		  addCode(" if(id!=null) {\r\n" + 
+	        		  		"    	ClassUtil.getPrimaryKeyByClass(Permission.class)\r\n" + 
+	        		  		"    }").
 	        		  build();
 	          methodSpecs.add(insert);
 	          MethodSpec delete=MethodSpec.methodBuilder("delete").

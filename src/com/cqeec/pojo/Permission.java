@@ -1,0 +1,77 @@
+package com.cqeec.pojo;
+
+import java.lang.Long;
+import java.lang.Override;
+import java.lang.String;
+import java.util.Date;
+
+import com.cqeec.annotation.Id;
+
+public class Permission {
+  private Date date;
+
+  private String name;
+
+  @Id(value="id",auto_increment=true)
+  private Long id;
+
+  private String desc_;
+
+  private String url;
+
+  public Permission(Date date, String name, Long id, String desc_, String url) {
+    this.date=date;
+    this.name=name;
+    this.id=id;
+    this.desc_=desc_;
+    this.url=url;
+  }
+
+  public Permission() {
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date=date;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name=name;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id=id;
+  }
+
+  public String getDesc() {
+    return desc_;
+  }
+
+  public void setDesc(String desc_) {
+    this.desc_=desc_;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url=url;
+  }
+
+  @Override
+  public String toString() {
+    return "["+"date"+"="+this.date+","+"name"+"="+this.name+","+"id"+"="+this.id+","+"desc_"+"="+this.desc_+","+"url"+"="+this.url+"]";
+  }
+}

@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)//运行有效,存在class字节码文件中
 public @interface Id {
   String value();
+  boolean auto_increment()default false;
 }

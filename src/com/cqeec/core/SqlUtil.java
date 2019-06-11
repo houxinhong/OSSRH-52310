@@ -129,7 +129,7 @@ public class SqlUtil {
 		}
 	}
 
-	public static void save(String sql, Object pojo) {
+	public static Integer save(String sql, Object pojo) {
 		 Field[] fields=pojo.getClass().getDeclaredFields(); 
 	        Object[] params=new Object[fields.length];
 	        Method[] methods=pojo.getClass().getDeclaredMethods();
@@ -148,6 +148,19 @@ public class SqlUtil {
 	        	index++;
 	        }
 	        modify(sql, params);
+	        
+	            try {
+	            	 boolean flag=FieldUtil.IsSelectPK(pojo.getClass());
+	     	        if(flag) {
+	     	        	ResultSet rs=DBUtil.getConn().prepareStatement("SELECT @@IDENTITY").executeQuery();
+	     	        	rs.next();
+	     	        	Integer id=rs.getInt(1);
+	     	        	return id;
+	     	        }
+				} catch (Exception e) {
+					new RuntimeException("查询插入自增主键错误");
+				}
+	        return null;
 	}
 
 	public static void delete(String sql, Object id) {

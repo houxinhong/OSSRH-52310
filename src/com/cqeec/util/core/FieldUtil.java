@@ -2,6 +2,8 @@ package com.cqeec.util.core;
 
 import java.lang.reflect.Field;
 
+import com.cqeec.annotation.Id;
+
 public class FieldUtil {
 
 	/**
@@ -32,6 +34,19 @@ public class FieldUtil {
 		
 		
 		
+	}
+
+	public static boolean IsSelectPK(Class<? extends Object> class1) {
+		 String fieldName=ClassUtil.getPrimaryKeyFieldName(class1);
+		 Field  pk=null;
+		 try {
+			pk=class1.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			throw new RuntimeException("没有找到主键异常");
+		}
+		 Id id=pk.getDeclaredAnnotation(Id.class);
+		 boolean flag=id.auto_increment();
+		 return flag;
 	}
 	
 	

@@ -39,7 +39,11 @@ public class GlobalParams {
 		return ClassName2TableMap==null?ClassUtil.getClassName_tableInfoMap(getProperties()):ClassName2TableMap;
 	}
 	public static Properties getProperties() {
-		return properties==null?FileParseUtil.parsePropertyFile(path):properties;
+		try {
+			return properties==null?FileParseUtil.parsePropertyFile(path):properties;
+		} catch (Exception e) {
+			throw new RuntimeException(path+"不存在该文件");
+		}
 	}
 	
    
