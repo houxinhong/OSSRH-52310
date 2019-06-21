@@ -27,7 +27,7 @@ public class PermissionMapperTest {
 
 	@Test
 	public void insert() {
-		Permission permission=new Permission(new Date(),"test",null, "1111","/dddd");
+		Permission permission=new Permission("test",null, "1111","/dddd");
 	    mapper.insert(permission);		
 	    System.out.println(permission);
 	}
@@ -60,6 +60,13 @@ public class PermissionMapperTest {
 		Condition condition=mapper.createCondtion().andUrlLike("%t%");
 		System.out.println(mapper.selectByCondition(condition));
 	}
+	
+	@Test
+	public void testOr() {
+		Condition condition=mapper.createCondtion().andDescEqualTo("编辑产品").OR().andDescEqualTo("1111");
+		System.out.println(mapper.selectByCondition(condition));
+	}
+	
 	
 	@Test
 	public void selectByConditionWithPagination() {
