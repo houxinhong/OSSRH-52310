@@ -19,7 +19,6 @@ public class User {
     this.name=name;
     this.id=id;
   }
-
   public User() {
   }
 
